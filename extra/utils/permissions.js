@@ -7,7 +7,7 @@ let permissions = {
     }
 }
 
-function permission(mod, operation, role) {
+function hasPermission(mod, operation, role) {
     console.log("permission", mod, operation, role)
     let mods = Object.keys(permissions)
     let operations = Object.keys(permissions[mod])
@@ -24,5 +24,5 @@ function linearSearch(arr, target) {
     return false;
 }
 
-let result = permission('getUsers', 'write', 'Trainer')
+let result = hasPermission('getUsers', 'write', 'Trainer')
 console.log(result)
