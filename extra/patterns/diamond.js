@@ -1,25 +1,25 @@
-var rows = Number(process.argv[2]);
+let rows = process.argv[2];
 
-function diamond(rows) {
-    str = "";
-    for (itr = 1; itr <= rows; itr++) {
-        for(space = rows-itr; space>0; space--) {
+const diamond = (rows) => {
+    let str = "";
+    for (let itr = 1; itr <= rows; itr++) {
+        for(let space = rows-itr; space>0; space--) {
             str = str + " "
         }
 
-        for(star = 1; star <= itr; star++ ) {
+        for(let star = 1; star <= itr; star++ ) {
             str= str + "* "
         }
         str+="\n"
     }
 
-    for (itr = 0; itr <= rows; itr++) {
+    for (let itr = 0; itr <= rows; itr++) {
 
-        for(star = 1; star <= itr; star++ ) {
+        for(let star = 1; star <= itr; star++ ) {
             str= str + " "
         }
 
-        for(space = rows-itr; space>0; space--) {
+        for(let space = rows-itr; space>0; space--) {
             str = str + "* "
         }
 
@@ -28,4 +28,16 @@ function diamond(rows) {
     console.log(str)
 }
 
-diamond(rows)
+
+let regex = /^([2-9]|1[0])$/;
+try {
+    if ( (!regex.test(rows))) {
+        throw  Error("Not a valid input.")
+    }else if( !(rows > 1 && rows < 11 )) {
+        throw Error("Range must be in 2 to 10")
+    }else{
+        diamond(rows)
+    }
+} catch(err) {
+    console.log(err.message)
+}
