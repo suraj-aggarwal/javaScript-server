@@ -1,0 +1,21 @@
+{
+  "name": "new",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "diamond" : "node extra/patterns/diamond.js",
+    "equilateral" : "node extra/patterns/equilateral.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suraj-aggarwal/javaScript-client.git"
+  },
+  "author": "suraj aggarwal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/suraj-aggarwal/javaScript-client/issues"
+  },
+  "homepage": "https://github.com/suraj-aggarwal/javaScript-client#readme"
+}
