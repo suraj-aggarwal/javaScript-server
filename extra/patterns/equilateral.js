@@ -17,7 +17,7 @@ const equilateral = (rows) => {
 
 let regex = /^([2-9]|1[0])$/;
 try {
-    if ( (!regex.test(rows)) ) {
+    if (!regex.test(rows)) {
         throw  Error("Not a valid input.")
     }else{
         equilateral(rows)
