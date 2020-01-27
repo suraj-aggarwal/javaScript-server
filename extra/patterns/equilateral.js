@@ -1,13 +1,13 @@
-var rows = Number(process.argv[2]);
+let rows = process.argv[2]
 
-function equilateral(rows) {
-    str = "";
-    for (itr = 1; itr <= rows; itr++) {
-        for(space = rows-itr; space>0; space--) {
+const equilateral = (rows) => {
+    let str = "";
+    for (let itr = 1; itr <= rows; itr++) {
+        for(let space = rows-itr; space>0; space--) {
             str = str + " "
         }
 
-        for(star = 1; star <= itr; star++ ) {
+        for(let star = 1; star <= itr; star++ ) {
             str= str + "* "
         }
         str+="\n"
@@ -15,4 +15,13 @@ function equilateral(rows) {
     console.log(str)
 }
 
-equilateral(rows)
+let regex = /^([2-9]|1[0])$/;
+try {
+    if ( (!regex.test(rows)) ) {
+        throw  Error("Not a valid input.")
+    }else{
+        equilateral(rows)
+    }
+} catch(err) {
+    console.log(err.message)
+}
