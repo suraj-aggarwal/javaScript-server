@@ -3,11 +3,25 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run lint"
+    
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test1": "echo \"Error: no test specified\" && exit 1",
     "diamond": "node extra/patterns/diamond.js",
     "equilateral": "node extra/patterns/equilateral.js",
-    "index" : "npx babel-node extra"
+    "index": "npx babel-node extra",
+    "tcsDiamond": "node extraTs/patterns/diamond.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:extra": "babel-node extra",
+    "start:extraTs": "tsc-watch --project . --onSuccess \"npm run nodemon\"",
+    "nodemon": "nodemon ./dist/index.js",
+    "lint": "./node_modules/tslint/bin/tslint -c tslint.json -p tsconfig.json --exclude 'node_modules/**/*.{j,t}s'",
+    "lint:fix": "npm run lint --fix"
   },
   "repository": {
     "type": "git",
@@ -22,6 +36,11 @@
   "devDependencies": {
     "@babel/core": "^7.8.3",
     "@babel/node": "^7.8.3",
-    "@babel/preset-env": "^7.8.3"
+    "@babel/preset-env": "^7.8.3",
+    "commitizen": "^4.0.3",
+    "husky": "^4.2.1",
+    "tsc-watch": "^4.1.0",
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5"
   }
 }
