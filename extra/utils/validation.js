@@ -1,19 +1,4 @@
-users = [
-    {
-        traineeName : "suraj.aggarwal@succesive.tech",
-        reveiwerName : "madhav.bansal@successive.tech"
-    },
-    {
-        traineeName : "anjali.shah@successive.tech",
-        reveiwerName : "pooja.thapa@successive.tech"
-    }
-] 
-
-const validateEmail = (str) => {
-    console.log("validateEmail", str)
-    let regex = /^[A-Za-z0-9._%+-]+@successive.tech$/
-    return regex.test(str)
-}
+import {validateEmail} from './helper'
 
 const validateUsers = (users) => {
     let validUsers = [];
@@ -33,9 +18,8 @@ users.forEach( function(user) {
         invalidUsers.push(reveiwerName)
     }
 })
-
 console.log(validUsers," ",validUsers.length)
 console.log(invalidUsers," ",invalidUsers.length)
 }
 
-validateUsers(users)
+export default validateUsers

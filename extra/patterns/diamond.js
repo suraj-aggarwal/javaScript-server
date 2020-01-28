@@ -1,12 +1,9 @@
-let rows = process.argv[2];
-
 const diamond = (rows) => {
     let str = "";
     for (let itr = 1; itr <= rows; itr++) {
         for (let space = rows - itr; space > 0; space--) {
             str = str + " "
         }
-
         for (let star = 1; star <= itr; star++) {
             str = str + "* "
         }
@@ -14,28 +11,31 @@ const diamond = (rows) => {
     }
 
     for (let itr = 0; itr <= rows; itr++) {
-
         for (let star = 1; star <= itr; star++) {
             str = str + " "
         }
-
         for (let space = rows - itr; space > 0; space--) {
             str = str + "* "
         }
-
         str += "\n"
     }
     console.log(str)
 }
 
-
-let regex = /^([2-9]|1[0])$/;
-try {
-    if (!regex.test(rows)) {
-        throw new Error("Not a valid input.");
-    } else {
-        diamond(rows);
+const validateDiamond = (rows) => {
+    let regex = /^([2-9]|1[0])$/;
+    try {
+        if (!regex.test(rows)) {
+            throw new Error("Not a valid input.");
+        } else {
+            diamond(rows);
+        }
+    } catch (err) {
+        console.log(err.message);
     }
-} catch (err) {
-    console.log(err.message);
 }
+
+export default validateDiamond;
+
+
+

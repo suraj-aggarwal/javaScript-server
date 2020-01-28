@@ -1,11 +1,4 @@
-let permissions = {
-    'getUsers' : {
-        all : ['head-Trainer'],
-        read : ['Trainer', 'Trainee'],
-        write : ['Trainer'],
-        delete : []
-    }
-}
+import {permissions} from '../constants'
 
 const hasPermission = (mod, operation, role) => {
     console.log("permission", mod, operation, role)
@@ -16,7 +9,7 @@ const hasPermission = (mod, operation, role) => {
 }
 
 const linearSearch = (arr, target) => {
-    for (element of arr) {
+    for (let element of arr) {
         if (element === target) {
             return true;
         }
@@ -24,5 +17,4 @@ const linearSearch = (arr, target) => {
     return false;
 }
 
-let result = hasPermission('getUsers' ,'write','Trainer')
-console.log(result)
+export default hasPermission;
