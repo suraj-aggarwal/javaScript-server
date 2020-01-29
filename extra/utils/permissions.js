@@ -5,24 +5,24 @@ let permissions = {
         write : ['Trainer'],
         delete : []
     }
-}
+};
 
 const hasPermission = (mod, operation, role) => {
-    console.log("permission", mod, operation, role)
-    let mods = Object.keys(permissions)
-    let operations = Object.keys(permissions[mod])
-    let roles = permissions[mod][operation]
-    return linearSearch(mods, mod) && linearSearch(operations, operation) &&  linearSearch(roles, role) 
-}
-
-const linearSearch = (arr, target) => {
-    for (element of arr) {
-        if (element === target) {
-            return true;
-        }
+    console.log("permission", mod, operation, role);
+    let commonRoles = permissions[mod] && permissions[mod][operation];
+    let specialRoles = permissions[mod] && permissions[mod].all;
+    let allow = false;
+    if(!commonRoles && !specialRoles) { // special condition undefined.
+        return false;
     }
-    return false;
-}
+    if(Array.isArray(commonRoles)) {
+        allow = commonRoles.includes(role)
+    }
+    if(!allow && Array.isArray(specialRoles)) {
+        allow = specialRoles.includes(role)
+    }
+    return allow;
+};
 
-let result = hasPermission('getUsers' ,'write','Trainer')
-console.log(result)
+let result = hasPermission('getUsers' ,'read','Trainee');
+console.log(result);
