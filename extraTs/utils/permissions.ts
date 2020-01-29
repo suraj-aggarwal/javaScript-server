@@ -7,7 +7,7 @@ const permissions = {
     }
 };
 
-const hasPermission = (mod, operation, role) => {
+const hasPermission = (mod: string, operation: string, role: string) => {
     console.log('permission', mod, operation, role);
     const commonRoles: string[] = permissions[mod] && permissions[mod][operation];
     const specialRoles: string[] = permissions[mod] && permissions[mod].all;
@@ -16,10 +16,10 @@ const hasPermission = (mod, operation, role) => {
         return false;
     }
     if (Array.isArray(commonRoles)) {
-        allow = commonRoles.includes(role);
+        allow = commonRoles.indexOf(role) > -1;
     }
     if (!allow && Array.isArray(specialRoles)) {
-        allow = specialRoles.includes(role);
+        allow = specialRoles.indexOf(role) > -1;
     }
     return allow;
 };
