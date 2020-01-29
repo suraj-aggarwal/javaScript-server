@@ -11,7 +11,7 @@ const hasPermission = (mod, operation, role) => {
     console.log("permission", mod, operation, role);
     let commonRoles = permissions[mod] && permissions[mod][operation];
     let specialRoles = permissions[mod] && permissions[mod].all;
-    let allow = false;
+    let allow = false
     if(!commonRoles && !specialRoles) { // special condition undefined.
         return false;
     }
