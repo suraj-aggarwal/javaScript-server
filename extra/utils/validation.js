@@ -1,25 +1,35 @@
-import {validateEmail} from './helper'
+const users = [
+    {
+        traineeName : 'suraj.aggarwal@successive.tech',
+        reveiwerName : 'madhav.bansal@successive.tech'
+    },
+    {
+        traineeName : 'anjali.shah@succesive.tech',
+        reveiwerName : 'pooja.thapa@successive.tech'
+    }
+] 
 
-const validateUsers = (users) => {
+const validateEmail = str => {
+    console.log("------validateEmail--------", str)
+    let regex = /^[A-Za-z0-9._%+-]+@successive.tech$/;
+    return regex.test(str)
+};
+
+const validateUsers = users => {
     let validUsers = [];
     let invalidUsers = [];
 
-users.forEach( function(user) {
+users.forEach( user => {
     let {traineeName , reveiwerName} = user
-    if(validateEmail(traineeName)) {
-        validUsers.push(traineeName)
+    if(validateEmail(traineeName) && validateEmail(reveiwerName)) {
+        validUsers.push(user);
     }else{
-        invalidUsers.push(traineeName)
+        invalidUsers.push(user);
     }
+});
 
-    if(validateEmail(reveiwerName)) {
-        validUsers.push(reveiwerName)
-    }else{
-        invalidUsers.push(reveiwerName)
-    }
-})
-console.log(validUsers," ",validUsers.length)
-console.log(invalidUsers," ",invalidUsers.length)
+console.log("valid users : ",validUsers," ",validUsers.length);
+console.log("Invalid users",invalidUsers," ",invalidUsers.length);
 }
 
 export default validateUsers
