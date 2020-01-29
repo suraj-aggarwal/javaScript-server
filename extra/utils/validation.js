@@ -1,4 +1,4 @@
-users = [
+const users = [
     {
         traineeName : 'suraj.aggarwal@successive.tech',
         reveiwerName : 'madhav.bansal@successive.tech'
@@ -32,4 +32,4 @@ console.log("valid users : ",validUsers," ",validUsers.length);
 console.log("Invalid users",invalidUsers," ",invalidUsers.length);
 }
 
-validateUsers(users)
+export default validateUsers

@@ -24,5 +24,5 @@ const hasPermission = (mod, operation, role) => {
     return allow;
 };
 
-let result = hasPermission('getUsers' ,'read','Trainee');
-console.log(result);
+
+export default hasPermission;

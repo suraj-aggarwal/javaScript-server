@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "diamond" : "node extra/patterns/diamond.js",
-    "equilateral" : "node extra/patterns/equilateral.js"
+    "diamond": "node extra/patterns/diamond.js",
+    "equilateral": "node extra/patterns/equilateral.js",
+    "index" : "npx babel-node extra"
   },
   "repository": {
     "type": "git",
@@ -17,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/suraj-aggarwal/javaScript-client/issues"
   },
-  "homepage": "https://github.com/suraj-aggarwal/javaScript-client#readme"
+  "homepage": "https://github.com/suraj-aggarwal/javaScript-client#readme",
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/node": "^7.8.3",
+    "@babel/preset-env": "^7.8.3"
+  }
 }
