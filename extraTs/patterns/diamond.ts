@@ -1,20 +1,20 @@
-const diamond = (rows: number): void => {
-    let str: string = '';
-    for (let itr: number = 1; itr <= rows; itr++) {
-        for (let space: number = rows - itr; space > 0; space--) {
+const diamond = (rows) => {
+    let str = '';
+    for (let itr = 1; itr <= rows; itr++) {
+        for (let space = rows - itr; space > 0; space--) {
             str = str + ' ';
         }
-        for (let star: number = 1; star <= itr; star++) {
+        for (let star = 1; star <= itr; star++) {
             str = str + '* ';
         }
         str += '\n';
     }
 
-    for (let itr: number = 0; itr <= rows; itr++) {
+    for (let itr = 0; itr <= rows; itr++) {
         for (let star = 1; star <= itr; star++) {
-            str = str +  ' ';
+            str = str + ' ';
         }
-        for (let space: number = rows - itr; space > 0; space--) {
+        for (let space = rows - itr; space > 0; space--) {
             str = str + '* ';
         }
         str += '\n';
@@ -22,13 +22,12 @@ const diamond = (rows: number): void => {
     console.log(str);
 };
 
-const validateDiamond = (rows: any): void => {
+const validateDiamond = (rows) => {
     const regex = /^([2-9]|1[0])$/;
     try {
         if (!regex.test(rows)) {
             throw new Error('Not a valid input.');
         } else {
-            Number(rows);
             diamond(rows);
         }
     } catch (err) {

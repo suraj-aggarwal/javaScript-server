@@ -1,21 +1,28 @@
-import { permissions } from '../constants';
-
-const hasPermission = (mod: string, operation: string, role: string): boolean => {
-    console.log('permission', mod, operation, role);
-    const mods = Object.keys(permissions);
-    const operations = Object.keys(permissions[mod]);
-    const roles = permissions[mod][operation];
-    return linearSearch(mods, mod) && linearSearch(operations, operation) && linearSearch(roles, role);
-};
-
-const linearSearch = (arr: string[], target: string): boolean => {
-    let element: string;
-    for (element of arr) {
-        if (element === target) {
-            return true;
-        }
+const permissions = {
+    'getUsers': {
+        all: ['head-Trainer'],
+        read: ['Trainer', 'Trainee'],
+        write: ['Trainer'],
+        delete: []
     }
-    return false;
 };
+
+const hasPermission = (mod, operation, role) => {
+    console.log('permission', mod, operation, role);
+    const commonRoles: string[] = permissions[mod] && permissions[mod][operation];
+    const specialRoles: string[] = permissions[mod] && permissions[mod].all;
+    let allow: boolean = false;
+    if (!commonRoles && !specialRoles) { // special condition undefined.
+        return false;
+    }
+    if (Array.isArray(commonRoles)) {
+        allow = commonRoles.includes(role);
+    }
+    if (!allow && Array.isArray(specialRoles)) {
+        allow = specialRoles.includes(role);
+    }
+    return allow;
+};
+
 
 export default hasPermission;

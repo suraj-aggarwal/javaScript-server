@@ -1,9 +1,9 @@
 interface Iusers {
     traineeName: string;
-    reveiwerName: string;
+    reviewerName: string;
 }
 
-interface Ipermission {
+interface Ipermissions {
     getUsers: Imodule;
 }
 
@@ -14,4 +14,4 @@ interface Imodule {
     delete: string[];
 }
 
-export { Iusers, Ipermission };
+export { Iusers, Ipermissions };
