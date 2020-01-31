@@ -16,8 +16,10 @@ class Server {
         app.listen(PORT, (err) => {
             if (err) {
                 console.log('error');
+            } else {
+                console.log('server is running at port ', PORT);
             }
-            console.log('sucessfull');
+
         });
         return this;
     }
@@ -28,7 +30,6 @@ class Server {
             console.log('I am OK');
             res.send('I am ok.');
         });
-        return this;
     }
 }
 
