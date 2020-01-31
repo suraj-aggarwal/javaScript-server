@@ -18,4 +18,4 @@ const users = [
     }
 ]
 
-export { permissions, users }
+export { permissions, users };
