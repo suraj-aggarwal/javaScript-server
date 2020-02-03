@@ -10,14 +10,14 @@ class Server {
         this.app = express();
     }
 
-    bootstrap = () => {
+    bootstrap = (): Server => {
         this.initBodyParser();
         this.setupRoutes();
         return this;
     }
 
-    run = () => {
-        const { app, config: { PORT } } = this;
+    run = (): Server => {
+        const { app, config: { PORT } }: Server = this;
         app.listen(PORT, (err) => {
             if (err) {
                 console.log('error');
@@ -29,7 +29,7 @@ class Server {
         return this;
     }
 
-    setupRoutes = () => {
+    setupRoutes = (): void => {
         const { app } = this;
         app.use('/health-check', (req: express.Request, res: express.Response) => {
             res.send('I am Ok');
@@ -38,7 +38,7 @@ class Server {
         app.use(errorHandler);
     }
 
-    initBodyParser = () => {
+    initBodyParser = (): Server => {
         const { app } = this;
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: false }));

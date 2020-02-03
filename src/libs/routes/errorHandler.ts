@@ -1,6 +1,6 @@
-import *  as express from 'express';
+import { Request, Response, NextFunction }  from 'express';
 
-const errorHandler = (err, req: express.Request, res: express.Response, next: express.NextFunction) => {
+const errorHandler = (err, req: Request, res: Response, next: NextFunction) => {
     const errorMessage = {
         error: err.message,
         message: 'error',
