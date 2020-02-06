@@ -3,6 +3,7 @@ import * as  bodyParser from 'body-parser';
 import notFoundRoutes from './libs/routes/notFoundRoutes';
 import errorHandler from './libs/routes/errorHandler';
 import mainRoute from './router';
+import validate from './libs/routes/validationHandler';
 
 
 class Server {
@@ -30,21 +31,24 @@ class Server {
         return this;
     }
 
-    setupRoutes = (): void => {
+    setupRoutes = (): Server => {
         const { app } = this;
         app.use('/health-check', (req: express.Request, res: express.Response) => {
+            console.log(req.body);
             res.send('I am Ok');
         });
         app.use('/api', mainRoute);
+        app.use(validate);
         app.use(notFoundRoutes);
         app.use(errorHandler);
+        return this;
     }
 
-    initBodyParser = (): Server => {
+    initBodyParser = (): void => {
+        console.log('-----------------BODY PARSER-------------------------');
         const { app } = this;
+        app.use(bodyParser.urlencoded({ extended: true }));
         app.use(bodyParser.json());
-        app.use(bodyParser.urlencoded({ extended: false }));
-        return this;
     }
 }
 
