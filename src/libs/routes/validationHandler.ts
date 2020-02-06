@@ -41,9 +41,10 @@ const validateTrainee = config => {
                 if (isFieldExits) {   // check the type of Input.
                     const value: string = req[input][parametr];
                     const type: string = typeof value;
+                    console.log('-----------Type--------', type);
                     if (isString && type !== 'string') {
                         errorLogs.push(`${parametr} String type is Required`);
-                    } else if (isNumber && type !== 'number') {
+                    } else if (isNumber && isNaN(Number(value))) {
                         errorLogs.push(`${parametr} Number type is Required`);
                     } else if (isObject && type !== 'object') {
                         errorLogs.push(`${parametr} object type is Required`);
@@ -66,7 +67,7 @@ const validateTrainee = config => {
         if (errorLogs.length !== 0) {
             next(errorLogs);
         }
-        next();
+        next(); 
     };
 };
 
