@@ -14,13 +14,14 @@ const errorHandler = (error, req: Request, res: Response, next: NextFunction) =>
             });
         });
         res.send(errorlogs);
-    }
-    res.send({
-            error : error.message,
+    } else {
+        res.send({
+            error,
             message : 'error',
             status : 500,
             timeStamp : new Date()
-    });
+        });
+    }
 };
 
 export default errorHandler;
