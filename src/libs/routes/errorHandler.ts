@@ -1,17 +1,26 @@
 import { Request, Response, NextFunction }  from 'express';
 
-const errorHandler = (errs, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (error, req: Request, res: Response, next: NextFunction) => {
     console.log('------------ERROR HANDLER--------------');
-    const errorlogs = [];
-    errs.forEach( err => {
-        errorlogs.push({
-            error : err,
+    console.log(error);
+    if (Array.isArray(error)) {
+        const errorlogs: object[] = [];
+        error.forEach( err => {
+            errorlogs.push({
+                error : err,
+                message : 'error',
+                status : 500,
+                timeStamp : new Date()
+            });
+        });
+        res.send(errorlogs);
+    }
+    res.send({
+            error : error.message,
             message : 'error',
             status : 500,
             timeStamp : new Date()
-        });
     });
-    res.send( errorlogs);
 };
 
 export default errorHandler;

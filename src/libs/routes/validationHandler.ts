@@ -13,7 +13,7 @@ const validateTrainee = config => {
             const isStringAvaliable = validaters.includes('string');
             const isObjectAvaliable = validaters.includes('isObject');
             const isDefaultAvaliable = validaters.includes('default');
-            const isRegexAvaliable = validaters.includes('regex');
+            const isRegexAvaliable = validaters.includes('regex'); 
             const isCustomAvaliable = validaters.includes('custom');
             const isInAvaliable = validaters.includes('in');
 
@@ -43,7 +43,7 @@ const validateTrainee = config => {
                     const type: string = typeof value;
                     if (isString && type !== 'string') {
                         errorLogs.push(`${parametr} String type is Required`);
-                    } else if (isNumber && type !== 'number') {
+                    } else if (isNumber && isNaN(Number(value))) {
                         errorLogs.push(`${parametr} Number type is Required`);
                     } else if (isObject && type !== 'object') {
                         errorLogs.push(`${parametr} object type is Required`);
