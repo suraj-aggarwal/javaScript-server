@@ -3,7 +3,7 @@ import * as  bodyParser from 'body-parser';
 import notFoundRoutes from './libs/routes/notFoundRoutes';
 import errorHandler from './libs/routes/errorHandler';
 import mainRoute from './router';
-import validate from './libs/routes/validationHandler';
+import Database from './libs/Database';
 
 
 class Server {
@@ -19,16 +19,18 @@ class Server {
     }
 
     run = (): Server => {
-        const { app, config: { PORT } }: Server = this;
-        app.listen(PORT, (err) => {
-            if (err) {
-                console.log('error');
-            } else {
-                console.log('server is running at port ', PORT);
-            }
-
-        });
-        return this;
+        const { app, config: { PORT , MONGO_URL: connectionUrl} }: Server = this;
+            Database(connectionUrl).then(() => {
+                app.listen(PORT, err => {
+                    if (err) {
+                        console.log('failed to fun app');
+                        throw new Error('failed to run app.');
+                    } else {
+                        console.log(`App successfully started at port ${PORT}`);
+                    }
+                });
+            });
+        return  this;
     }
 
     setupRoutes = (): Server => {
