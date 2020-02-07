@@ -11,6 +11,10 @@ class Database {
             }
         });
     });
+
+    static disconnect = () => {
+        mongoose.disconnect();
+    }
 }
 
 export default Database.open;
