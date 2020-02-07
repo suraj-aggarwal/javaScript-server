@@ -17,4 +17,4 @@ class Database {
     }
 }
 
-export default Database.open;
+export default Database;
