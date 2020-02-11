@@ -1,5 +1,4 @@
 import { Schema, SchemaType }  from 'mongoose';
-import Iuser from './IUserModel';
 
 class UserSchema extends Schema {
 
