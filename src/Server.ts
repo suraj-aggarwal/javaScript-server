@@ -1,5 +1,6 @@
 import * as express from 'express';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import * as  bodyParser from 'body-parser';
 import notFoundRoutes from './libs/routes/notFoundRoutes';
 import errorHandler from './libs/routes/errorHandler';
@@ -12,14 +13,22 @@ class Server {
 class Server {
 
 >>>>>>> Stashed changes
+=======
+class Server {
+
+>>>>>>> Stashed changes
     private app: express.Application;
     constructor(private config) {
         this.app = express();
     }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     bootstrap = (): Server => {
         this.initBodyParser();
+=======
+    bootstrap = () => {
+>>>>>>> Stashed changes
 =======
     bootstrap = () => {
 >>>>>>> Stashed changes
@@ -27,6 +36,7 @@ class Server {
         return this;
     }
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     run = (): Server => {
         const { app, config: { PORT , MONGO_URL: connectionUrl} }: Server = this;
@@ -61,6 +71,8 @@ class Server {
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(bodyParser.json());
 =======
+=======
+>>>>>>> Stashed changes
     run = () => {
         const { app, config: { PORT } } = this;
         app.listen(PORT, (err) => {
@@ -79,6 +91,9 @@ class Server {
             res.send('I am ok.');
         });
         return this;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     }
 }

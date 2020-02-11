@@ -10,6 +10,7 @@
     }
   },
   "scripts": {
+    "test1": "echo \"Error: no test specified\" && exit 1",
     "diamond": "node extra/patterns/diamond.js",
     "equilateral": "node extra/patterns/equilateral.js",
     "index": "npx babel-node extra",
@@ -21,6 +22,8 @@
     "lint": "./node_modules/tslint/bin/tslint -c tslint.json -p tsconfig.json --exclude 'node_modules/**/*.{j,t}s'",
     "lint:fix": "npm run lint --fix",
     "start": "tsc-watch --project . --onSuccess \"npm run nodemon\"",
+    "lint:fix": "npm run lint --fix",
+    "start": "tsc-watch --project . --onSuccess \"npm run nodemon\""
     "lint:fix": "npm run lint --fix",
     "start": "tsc-watch --project . --onSuccess \"npm run nodemon\""
   },
