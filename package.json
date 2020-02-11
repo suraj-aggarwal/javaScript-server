@@ -23,8 +23,8 @@
     "lint:fix": "npm run lint --fix",
     "start": "tsc-watch --project . --onSuccess \"npm run nodemon\"",
     "lint:fix": "npm run lint --fix",
-    "start": "tsc-watch --project . --onSuccess \"npm run nodemon\""
-    "lint:fix": "npm run lint --fix",
+    "start": "tsc-watch --project . --onSuccess \"npm run nodemon\"",
+    "lint:fix" : "npm run lint --fix",
     "start": "tsc-watch --project . --onSuccess \"npm run nodemon\""
   },
   "repository": {
