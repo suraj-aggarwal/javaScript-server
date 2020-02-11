@@ -20,6 +20,8 @@
     "nodemon": "nodemon ./dist/index.js",
     "lint": "./node_modules/tslint/bin/tslint -c tslint.json -p tsconfig.json --exclude 'node_modules/**/*.{j,t}s'",
     "lint:fix": "npm run lint --fix",
+    "start": "tsc-watch --project . --onSuccess \"npm run nodemon\"",
+    "lint:fix": "npm run lint --fix",
     "start": "tsc-watch --project . --onSuccess \"npm run nodemon\""
   },
   "repository": {
@@ -38,6 +40,10 @@
     "@babel/preset-env": "^7.8.3",
     "@types/express": "^4.17.2",
     "body-parser": "^1.19.0",
+    "commitizen": "^4.0.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "@types/express": "^4.17.2",
     "commitizen": "^4.0.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

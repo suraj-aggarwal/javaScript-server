@@ -1,4 +1,5 @@
 import * as express from 'express';
+<<<<<<< Updated upstream
 import * as  bodyParser from 'body-parser';
 import notFoundRoutes from './libs/routes/notFoundRoutes';
 import errorHandler from './libs/routes/errorHandler';
@@ -7,17 +8,26 @@ import Database from './libs/Database';
 
 
 class Server {
+=======
+class Server {
+
+>>>>>>> Stashed changes
     private app: express.Application;
     constructor(private config) {
         this.app = express();
     }
 
+<<<<<<< Updated upstream
     bootstrap = (): Server => {
         this.initBodyParser();
+=======
+    bootstrap = () => {
+>>>>>>> Stashed changes
         this.setupRoutes();
         return this;
     }
 
+<<<<<<< Updated upstream
     run = (): Server => {
         const { app, config: { PORT , MONGO_URL: connectionUrl} }: Server = this;
             Database.open(connectionUrl).then(() => {
@@ -50,6 +60,26 @@ class Server {
         const { app } = this;
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(bodyParser.json());
+=======
+    run = () => {
+        const { app, config: { PORT } } = this;
+        app.listen(PORT, (err) => {
+            if (err) {
+                console.log('Not found.');
+            }
+            console.log('sucessfull');
+        });
+        return this;
+    }
+
+    setupRoutes = () => {
+        const { app } = this;
+        app.use('/health-check', (req, res) => {
+            console.log('I am OK');
+            res.send('I am ok.');
+        });
+        return this;
+>>>>>>> Stashed changes
     }
 }
 
