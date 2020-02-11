@@ -6,6 +6,7 @@ const validateTrainee = config => {
         const parameters: string[] = Object.keys(config);
         const errorLogs: string[] = [];
         parameters.forEach(parametr => {
+
             const validaters: string[] = Object.keys(config[parametr]);
             const isRequiredAvaliable = validaters.includes('required');
             const isErrorMessageAvaliable = validaters.includes('errorMessage');
@@ -25,16 +26,17 @@ const validateTrainee = config => {
             const constant: number = (isDefaultAvaliable) ? config[parametr]['default'] : undefined;
             const regex: RegExp = (isRegexAvaliable) ? config[parametr]['regex'] : undefined;
             const custom: any = (isCustomAvaliable) ? config[parametr]['custom'] : undefined;
-            const input: string = (isInAvaliable) ? config[parametr]['in'] : undefined;
+            const inputs: string[] = (isInAvaliable) ? config[parametr]['in'] : undefined;
 
 
 
-            if (input !== undefined) {
+            if (inputs !== undefined) {
 
+            inputs.forEach(input => {
                 const clientInputFields: string[] = Object.keys(req[input]);
                 const isFieldExits: boolean = clientInputFields.includes(parametr);
 
-                if (!isFieldExits && isRequired) { 
+                if (!isFieldExits && isRequired) {
                     errorLogs.push(`${parametr} is Required`);
                 }
 
@@ -61,6 +63,7 @@ const validateTrainee = config => {
                 if (isFieldExits && regex !== undefined && regex.test(req[input][parametr]) && errorMessage !== undefined) {
                     errorLogs.push(` ${req[input][parametr]} format is not correct`);
                 }
+            });
             }
         });
         if (errorLogs.length !== 0) {
