@@ -15,7 +15,7 @@ const validate = {
         },
         name: {
             required: true,
-            regex: /^[0-9]*$/,
+            regex: /^[a-zA-Z][a-zA-Z ]+$/,
             in: ['body'],
             errorMessage: 'Name is required',
         }
