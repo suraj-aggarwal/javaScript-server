@@ -49,11 +49,17 @@ const validateTrainee = config => {
                             errorLogs.push(`${parameter} Number type is Required`);
                         } else if (isObject && type !== 'object') {
                             errorLogs.push(`${parameter} object type is Required`);
+                        } else if (isObject && !Array.isArray(req[input][parameter])) {
+                            errorLogs.push(`${parameter} Array type is Required`);
                         }
                     }
 
                     if (isFieldExits && custom !== undefined) { // check custom case if exits
-                        console.log('custom');
+                         try {
+                             custom(req[input][parameter]);
+                        } catch (err) {
+                            throw err;
+                        }
                     }
 
                     if (isFieldExits && constant !== undefined && (req[input][parameter] === undefined || req[input][parameter] === null)) {
@@ -61,7 +67,7 @@ const validateTrainee = config => {
                     }
 
                     if (isFieldExits && regex !== undefined && !regex.test(req[input][parameter]) && errorMessage !== undefined) {
-                        errorLogs.push(` ${req[input][parameter]} format is not correct`);
+                        errorLogs.push(` ${req[input][parameter]} is Invalid`);
                     }
                 });
             }

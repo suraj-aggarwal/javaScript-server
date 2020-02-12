@@ -1,17 +1,17 @@
-import { Schema, SchemaType }  from 'mongoose';
+import { VersionableSchema } from '../versionable/VersionableSchema';
+import { Schema } from 'mongoose';
+class UserSchema extends VersionableSchema {
 
-class UserSchema extends Schema {
-
-    constructor(option) {
-        const userSchema = {
+    constructor() {
+        const userSchema = new Schema({
             name: String,
             email: String,
             address: String,
             mod: Number,
             dob: Date,
             hobbies: [String]
-        };
-        super(userSchema, option);
+        });
+        super(userSchema);
     }
 }
 
