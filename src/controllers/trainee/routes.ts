@@ -8,6 +8,6 @@ console.log('------------TRAINEE ROUTER---------');
 traineeRoute.get('/', validateTrainee(validate.get), Controller.listTrainee)
     .post('/', validateTrainee(validate.create), Controller.addTrainee)
     .put('/', validateTrainee(validate.update), Controller.updateTrainee)
-    .delete('/', validateTrainee(validate.delete), Controller.deleteTrainee);
+    .delete('/:id', validateTrainee(validate.delete), Controller.deleteTrainee);
 
 export default traineeRoute;

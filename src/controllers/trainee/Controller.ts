@@ -21,7 +21,7 @@ class TraineeController {
     }
 
     listTrainee = (req: Request, res: Response): void => {
-        console.log('---------TRAINEE LIST------------');
+        console.log('---------TRAINEE LIST------------',req.query);
         const list = [
              {
                 id: '1',
