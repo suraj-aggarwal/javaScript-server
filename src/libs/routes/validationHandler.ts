@@ -42,7 +42,6 @@ const validateTrainee = config => {
                     }
                     if (constant && !req[input][parameter]) {
                         req[input][parameter] = constant;
-                        console.log('-------------request updated', req[input][parameter]);
                     }
                     if (isFieldExits && regex && !regex.test(req[input][parameter]) ) {
                         errorLogs.push(` ${parameter} is Invalid`);
