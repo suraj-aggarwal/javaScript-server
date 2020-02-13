@@ -38,7 +38,6 @@ class Server {
             res.send('I am Ok');
         });
         app.use('/api', mainRoute);
-        app.use(validate);
         app.use(notFoundRoutes);
         app.use(errorHandler);
         return this;
