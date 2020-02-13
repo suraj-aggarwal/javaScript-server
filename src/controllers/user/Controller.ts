@@ -20,7 +20,6 @@ class UserController {
 
     addUser = (req: Request, res: Response): void => {
         console.log('---------ADD USER------------');
-        const user: {id , name, email, mod, dob, hobbies } = req.body;
         this.userRepo.create(req.body).then(err => {
             res.send('Trainee added Successfully');
             }

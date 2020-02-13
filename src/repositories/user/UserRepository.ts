@@ -1,16 +1,23 @@
 import { userModel } from './UserModel';
-import * as mongoose  from 'mongoose';
+import VersionableRepository from '../versionable/VersionableRepository';
+import IUserModel from './IUserModel';
+import * as mongoose from 'mongoose';
+
+class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IUserModel>> {
 
 
-class UserRepository {
-
+    constructor() {
+        super(userModel);
+    }
     public count = () => {
         return userModel.countDocuments();
     }
 
-    public create = (user: any) => {
-        return userModel.create(user);
+    public create = (data): Promise<IUserModel> => {
+        console.log('----------IN USERREPOSITORY CREATE METHOD-----------');
+        return super.create(data);
     }
+
 
     public delete = (id: string) => {
         console.log('----------DELETE USER-------------', id);
@@ -18,9 +25,8 @@ class UserRepository {
     };
 
     public update = (id: string, dataToUpdate: object) => {
-        console.log('-------------UPDATE USER------------', id);
-        console.log('-----------dataToUpdate------', dataToUpdate);
-        return userModel.findByIdAndUpdate();
+        console.log('----------User REPO --------udpate');
+        return super.update(id, dataToUpdate);
     }
 
     public isExits = (id: string, email: string) => {
@@ -30,9 +36,9 @@ class UserRepository {
         return userModel.exists(condition);
     }
 
-public profile = (_id: string) => {
+    public profile = (_id: string) => {
         console.log('----------------User Profile Inside Controller--------------');
-        return userModel.findOne({_id});
+        return userModel.findOne({ _id });
     }
 }
 

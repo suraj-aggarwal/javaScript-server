@@ -7,11 +7,11 @@ class Database {
         mongoose.connect(uri, { useNewUrlParser: true , useUnifiedTopology: true }, (err) => { 
             if (err) {
                 console.log(err.message);
-                reject('connnection failed');
+                return reject('connnection failed');
             } else {
                 console.log('connection is successfull');
                 seedData();
-                resolve('connection is successfull');
+                return resolve('connection is successfull');
             }
         });
     });

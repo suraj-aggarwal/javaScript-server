@@ -7,5 +7,6 @@ export interface IVersionableDocument extends mongoose.Document {
     createdAt: Date;
     deletedAt: Date;
     updatedAt: Date;
+    originalId: string;
 }
 

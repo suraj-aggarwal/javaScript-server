@@ -12,25 +12,23 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
         const decodedPayload = jwt.verify(token, configuration.SECRECT_KEY);
         const decodedString = JSON.stringify(decodedPayload);
         const decodedJson = JSON.parse(decodedString);
-        console.log(decodedPayload);
         if (!decodedPayload) {
-            throw new Error('Unatuhorized Acess.');
+            return res.status(500).send('Unatuhorized Acess.');
         }
-
         const id: string = decodedJson.id;
         const email: string = decodedJson.email;
         if (userRepo.isExits(id, email)) {
             console.log('user already exits');
         } else {
             console.log('user doesnt exits');
-            res.send('cant find user.');
+            return res.status(500).send('cant find user.');
         }
 
         if (!hasPermission(module, permission, decodedJson.role)) {
-            throw new Error('Permission Denied.');
+            return res.status(500).send('Permission Denied.');
         }
         console.log('----------------AUTHENTIC AND ATHORIZED------------');
-        next();
+         return next();
     } catch (err) {
         throw err;
     }
