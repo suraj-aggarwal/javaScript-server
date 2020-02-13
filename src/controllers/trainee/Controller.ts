@@ -21,7 +21,7 @@ class TraineeController {
     }
 
     listTrainee = (req: Request, res: Response): void => {
-        console.log('---------TRAINEE LIST------------',req.query);
+        console.log('---------TRAINEE LIST------------');
         const list = [
              {
                 id: '1',
@@ -56,7 +56,7 @@ class TraineeController {
         res.send(trainee);
     }
 
-    deleteTrainee = (req: Request, res: Response): void => {
+    deleteTrainee = (req: Request, res: Response) => {
         console.log('---------DELETE TRAINEE------------');
         const trainee = {
             id: '2',
