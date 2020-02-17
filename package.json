@@ -47,5 +47,8 @@
     "tslint": "^6.0.0",
     "typescript": "^3.7.5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@types/jsonwebtoken": "^8.3.7",
+    "jsonwebtoken": "^8.5.1"
+  }
 }
