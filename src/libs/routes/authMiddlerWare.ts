@@ -7,9 +7,7 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
     console.log('----------------------AUTHMIDDLE WARE------------------');
     try {
         const token: string = req.headers.authorization;
-        const decodedPayload = jwt.verify(token, configuration.SECRECT_KEY);
-        const decodedString = JSON.stringify(decodedPayload);
-        const decodedJson = JSON.parse(decodedString);
+        const decodedPayload: any = jwt.verify(token, configuration.SECRECT_KEY);
         if (!decodedPayload) {
             res.send(
             {   error : 'Unatuhorized Acess.',
@@ -17,13 +15,15 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
                 message: 'Unatuhorized Acess.'
         });
         }
-        if (!hasPermission(module, permission, decodedJson.role)) {
+
+        if (!hasPermission(module, permission, decodedPayload.role)) {
             res.send(
                 {   error : 'Permission Denied.',
                     Stauts: 403,
                     message: 'Permission Denied.'
             });
         }
+
     console.log('----------------AUTHENTIC AND ATHORIZED------------');
         next();
     } catch (err) {
