@@ -12,10 +12,18 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
         const decodedJson = JSON.parse(decodedString);
         console.log(decodedPayload);
         if (!decodedPayload) {
-            throw new Error('Unatuhorized Acess.');
+            res.send(
+            {   error : 'Unatuhorized Acess.',
+                Stauts: 401,
+                message: 'Unatuhorized Acess.'
+        });
         }
         if (!hasPermission(module, permission, decodedJson.role)) {
-            throw new Error('Permission Denied.');
+            res.send(
+                {   error : 'Permission Denied.',
+                    Stauts: 403,
+                    message: 'Permission Denied.'
+            });
         }
     console.log('----------------AUTHENTIC AND ATHORIZED------------');
         next();
