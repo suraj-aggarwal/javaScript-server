@@ -40,6 +40,10 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
         console.log('----------------User Profile Inside Controller--------------');
         return userModel.findOne({ _id });
     }
+
+    public IsEmailExits = (email: string) => {
+        return super.IsEmailExits(email);
+    }
 }
 
 export default UserRepository;

@@ -1,6 +1,9 @@
-import { Request, Response, request } from 'express';
+import { Response, request } from 'express';
 import UserRepository from '../../repositories/user/UserRepository';
 import { IRequest } from '../../libs/interface';
+import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+import config from '../../config/configuration';
 
 class UserController {
 
@@ -26,6 +29,8 @@ class UserController {
             ...body,
             _authId: req.user._authId
         };
+        const hash = bcrypt.hashSync(data.password, 10);
+        data.password = hash;
         console.log('------compelete data -----------', data);
         this.userRepo.create(data).then(err => {
             res.send('Trainee added Successfully');
@@ -51,27 +56,27 @@ class UserController {
             .then(result => {
                 console.log('result form database .', result);
                 if (!result) {
-                res.send(result);
+                    res.send(result);
                 }
                 res.send(` NO such user exits ${result}`);
-             })
+            })
             .catch(err => res.send(err));
     }
 
     deleteUser = (req: IRequest, res: Response): void => {
         console.log('---------DELETE TRAINEE------------');
         const deleteRecord = {
-            _authId : req.user._authId,
-            recordId : req.params.id
+            _authId: req.user._authId,
+            recordId: req.params.id
         };
         this.userRepo.delete(deleteRecord)
             .then(user => {
                 console.log('user ------', user);
                 if (!user) {
-                res.send(user);
+                    res.send(user);
                 }
                 res.send('----No such User exits.-------');
-             })
+            })
             .catch(err => res.send(err));
     }
 
@@ -87,6 +92,24 @@ class UserController {
                 res.send(err);
                 console.log();
             });
+    }
+
+     login =  async (req: IRequest, res: Response): Promise<void> => {
+        const email = req.body.email;
+        const password = req.body.password;
+        const doc = await this.userRepo.IsEmailExits(email);
+        console.log(doc);
+        if (doc !== null) {
+            const match = await bcrypt.compare(password, doc.password);
+            console.log('--------Match-------', match);
+            if (!match) {
+                res.send(`Invalid password.`);
+            }
+            const token = jwt.sign({email, password}, config.SECRECT_KEY);
+            res.send(token);
+        } else {
+            res.send(`Invalid email`);
+        }
     }
 }
 

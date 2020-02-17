@@ -47,7 +47,12 @@ class VersionableRepository<D extends mongoose.Document, M extends mongoose.Mode
         const query = {originalId : deleteRecord.recordId, deletedBy: undefined};
         const update = {deletedAt : Date.now(), deletedBy: deleteRecord._authId};
         return await this.modelType.findOneAndUpdate(query, update);
-        }
+    }
+
+    public async IsEmailExits(email): Promise<D> {
+        console.log('---------IS EXITS-------------');
+        return await this.modelType.findOne({email});
+    }
 }
 
 export default VersionableRepository;
