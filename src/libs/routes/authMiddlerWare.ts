@@ -10,7 +10,6 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
         const decodedPayload = jwt.verify(token, configuration.SECRECT_KEY);
         const decodedString = JSON.stringify(decodedPayload);
         const decodedJson = JSON.parse(decodedString);
-        console.log(decodedPayload);
         if (!decodedPayload) {
             res.send(
             {   error : 'Unatuhorized Acess.',
