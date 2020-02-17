@@ -19,14 +19,14 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
     }
 
 
-    public delete = (id: string) => {
-        console.log('----------DELETE USER-------------', id);
-        return userModel.deleteOne(id);
+    public delete = (deleteRecord: object) => {
+        console.log('----------DELETE USER-------------', deleteRecord);
+        return super.delete(deleteRecord);
     };
 
-    public update = (id: string, dataToUpdate: object) => {
+    public update = (record) => {
         console.log('----------User REPO --------udpate');
-        return super.update(id, dataToUpdate);
+        return super.update(record);
     }
 
     public isExits = (id: string, email: string) => {

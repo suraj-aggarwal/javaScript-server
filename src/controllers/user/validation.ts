@@ -2,7 +2,7 @@ const validate = {
     create:
     {
         id: {
-            required: true,
+            required: false,
             string: true,
             in: ['body'],
             custom: value => {
@@ -51,9 +51,9 @@ const validate = {
             in: ['body'],
             required: true,
             isObject: true,
-            // custom: dataToUpdate => {
-            //     console.log('custom function');
-            // },
+            custom: dataToUpdate => {
+                console.log('custom function');
+            },
         }
     }
 };

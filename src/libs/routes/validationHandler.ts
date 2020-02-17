@@ -35,7 +35,7 @@ const validateTrainee = config => {
                     }
                     if (isFieldExits && custom) { // check custom case if exits
                         try {
-                           custom(req[input][parameter]);
+                           //custom(req[input][parameter]);
                         } catch (err) {
                             errorLogs.push(err);
                         }

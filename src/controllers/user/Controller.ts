@@ -1,5 +1,6 @@
 import { Request, Response, request } from 'express';
 import UserRepository from '../../repositories/user/UserRepository';
+import { IRequest } from '../../libs/interface';
 
 class UserController {
 
@@ -10,7 +11,7 @@ class UserController {
         }
         return UserController.instance = new UserController();
     }
-    private constructor() {}
+    private constructor() { }
 
     private userRepo = new UserRepository();
 
@@ -18,44 +19,74 @@ class UserController {
         this.userRepo.count();
     }
 
-    addUser = (req: Request, res: Response): void => {
+    addUser = (req: IRequest, res: Response): void => {
         console.log('---------ADD USER------------');
-        this.userRepo.create(req.body).then(err => {
+        const body = req.body;
+        const data = {
+            ...body,
+            _authId: req.user._authId
+        };
+        console.log('------compelete data -----------', data);
+        this.userRepo.create(data).then(err => {
             res.send('Trainee added Successfully');
-            }
+        }
         ).catch(err => {
             res.send(err);
         });
     }
-    listUsers = (req: Request, res: Response): void => {
+    listUsers = (req: IRequest, res: Response): void => {
         console.log('---------TRAINEE LIST------------');
     }
 
-    updateUser = (req: Request, res: Response): void => {
+    updateUser = (req: IRequest, res: Response): void => {
         console.log('----------updateUser-----------');
         console.log('------------ID------------', req.body['id']);
         console.log('---------REQUEST UDATE------', req.body['dataToUpdate']);
-        this.userRepo.update(req.body['id'],req.body['dataToUpdate'])
-        .then(result => res.send(result))
-        .catch(err => res.send(err));
+        const record = {
+            originalId: req.body.id,
+            dataToUpdate: req.body.dataToUpdate,
+            _authId: req.user._authId
+        };
+        this.userRepo.update(record)
+            .then(result => {
+                console.log('result form database .', result);
+                if (!result) {
+                res.send(result);
+                }
+                res.send(` NO such user exits ${result}`);
+             })
+            .catch(err => res.send(err));
     }
 
-    deleteUser = (req: Request, res: Response): void => {
+    deleteUser = (req: IRequest, res: Response): void => {
         console.log('---------DELETE TRAINEE------------');
-        this.userRepo.delete(req['id'])
-        .then(user => res.send(user))
-        .catch(err => res.send(err));
+        const deleteRecord = {
+            _authId : req.user._authId,
+            recordId : req.params.id
+        };
+        this.userRepo.delete(deleteRecord)
+            .then(user => {
+                console.log('user ------', user);
+                if (!user) {
+                res.send(user);
+                }
+                res.send('----No such User exits.-------');
+             })
+            .catch(err => res.send(err));
     }
 
-    userProfile = (req: Request, res: Response): void => {
+    userProfile = (req: IRequest, res: Response): void => {
         this.userRepo.profile(req.body['id'])
-        .then(profile => {
-                console.log('--------user Profile----------', profile);
-                res.send(profile);
+            .then(profile => {
+                if (!profile) {
+                    console.log('--------user Profile----------', profile);
+                    res.send(profile);
+                }
+                res.send(`Document Does not exits.`);
             }).catch(err => {
                 res.send(err);
                 console.log();
-        });
+            });
     }
 }
 

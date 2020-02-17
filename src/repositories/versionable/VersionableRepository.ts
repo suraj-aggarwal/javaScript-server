@@ -8,7 +8,7 @@ class VersionableRepository<D extends mongoose.Document, M extends mongoose.Mode
     }
 
     public getObjectId() {
-        return String(mongoose.Types.ObjectId);
+        return mongoose.Types.ObjectId();
     }
 
     public create(data): Promise<D> {
@@ -16,27 +16,38 @@ class VersionableRepository<D extends mongoose.Document, M extends mongoose.Mode
         const record = {
             ...data,
             createdAt : Date.now(),
-            createdBy : data.name,
-            originalId: data.id
+            createdBy : data._authId,
+            originalId: this.getObjectId()
         };
-        console.log(record);
         return this.modelType.create(record);
     }
 
-    public update(id, data): Promise<D> {
-        console.log('----------IN VERSIONABLE REPO---------', data);
-        this.modelType.findOne({id}).then(result => {
-            console.log('result Set', result);
-        });
-        const record = {
-            ...data,
+    public async update(record): Promise<D> {
+    console.log('----------IN VERSIONABLE REPO---------', record);
+    const query = {originalId : record.originalId, deletedBy: undefined};
+    const update = {deletedAt : Date.now(), deletedBy: record._authId};
+    const result = await this.modelType.findOneAndUpdate(query, update);
+    const doc = result.toJSON();
+        const updateRecord = {
+            ...doc,
+            ...record.dataToUpdate,
             updatedAt : Date.now(),
-            updatedBy : data.name,
-            originalId: data.id
-        };
-        return this.modelType.create(record);
+            updatedBy : record._authId,
+            originalId: doc.originalId
+            };
+            delete updateRecord._id;
+            delete updateRecord.deletedAt;
+            delete updateRecord.deletedBy;
+            console.log('---------Updated record -----------', updateRecord);
+            return this.modelType.create(updateRecord);
     }
 
+    public async delete(deleteRecord): Promise<D> {
+        console.log('----------IN VERSIONABLE REPO---------', deleteRecord);
+        const query = {originalId : deleteRecord.recordId, deletedBy: undefined};
+        const update = {deletedAt : Date.now(), deletedBy: deleteRecord._authId};
+        return await this.modelType.findOneAndUpdate(query, update);
+        }
 }
 
 export default VersionableRepository;

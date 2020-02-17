@@ -3,8 +3,10 @@ import configuration from '../../config/configuration';
 import * as jwt from 'jsonwebtoken';
 import hasPermission from '../utils/permissions';
 import UserRepository from '../../repositories/user/UserRepository';
+import { IRequest } from '../interface';
+import { ConnectionStates } from 'mongoose';
 
-const authMiddlerWare = (module: string, permission: string) => (req: Request, res: Response, next: NextFunction) => {
+const authMiddlerWare = (module: string, permission: string) => (req: IRequest, res: Response, next: NextFunction) => {
     console.log('----------------------AUTHMIDDLE WARE------------------');
     const userRepo = new UserRepository();
     try {
@@ -15,8 +17,17 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
         if (!decodedPayload) {
             return res.status(500).send('Unatuhorized Acess.');
         }
-        const id: string = decodedJson.id;
-        const email: string = decodedJson.email;
+
+        const { id, email} = decodedJson;
+        console.log(decodedJson);
+        const user = {
+            _authId : id,
+            email
+        };
+
+        req.user = user;
+        console.log(req.user);
+
         if (userRepo.isExits(id, email)) {
             console.log('user already exits');
         } else {
