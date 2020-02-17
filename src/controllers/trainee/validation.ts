@@ -7,15 +7,11 @@ const validate = {
             in: ['body'],
             custom: value => {
                 console.log('Value', value);
-                throw {
-                    error: 'Error Occured',
-                    message: 'Message'
-                };
             }
         },
         name: {
             required: true,
-            regex: /^[0-9]*$/,
+            regex: /^[a-zA-Z][a-zA-Z ]+$/,
             in: ['body'],
             errorMessage: 'Name is required',
         }
