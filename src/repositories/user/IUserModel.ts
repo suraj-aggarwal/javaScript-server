@@ -7,6 +7,7 @@ interface IUserModel extends IVersionableDocument {
     address: string;
     mob: number;
     dob: Date;
+    role: string;
     hobbies: [string];
 }
 

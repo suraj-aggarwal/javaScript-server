@@ -4,10 +4,12 @@ import { IRequest } from '../../libs/interface';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import config from '../../config/configuration';
+import SystemResponse from '../../libs/routes/SystemRespone';
 
 class UserController {
 
     static instance: UserController;
+    private systemResponse = new SystemResponse();
     static getInstance(): UserController {
         if (UserController.instance instanceof UserController) {
             return UserController.instance;
@@ -22,62 +24,67 @@ class UserController {
         this.userRepo.count();
     }
 
-    addUser = (req: IRequest, res: Response): void => {
+    addUser = async (req: IRequest, res: Response): Promise<void> => {
         console.log('---------ADD USER------------');
-        const body = req.body;
-        const data = {
-            ...body,
-            _authId: req.user._authId
-        };
-        const hash = bcrypt.hashSync(data.password, 10);
-        data.password = hash;
-        console.log('------compelete data -----------', data);
-        this.userRepo.create(data).then(err => {
-            res.send('Trainee added Successfully');
+        try {
+            const body = req.body;
+            const data = {
+                ...body,
+                _authId: req.user._authId
+            };
+            const hash = bcrypt.hashSync(data.password, 10);
+            data.password = hash;
+            console.log('------compelete data -----------', data);
+            const result = await this.userRepo.create(data);
+            if (result !== null) {
+                return this.systemResponse.success(res, req, 'user added successfully', 200);
+            } else {
+                return this.systemResponse.success(res, req, 'user add failed', 500);
+            }
+        } catch (error) {
+            return this.systemResponse.failure(res, req, error, `can't add user`, 500);
         }
-        ).catch(err => {
-            res.send(err);
-        });
+
     }
     listUsers = (req: IRequest, res: Response): void => {
         console.log('---------TRAINEE LIST------------');
     }
 
-    updateUser = (req: IRequest, res: Response): void => {
+    updateUser = async (req: IRequest, res: Response): Promise<void> => {
         console.log('----------updateUser-----------');
         console.log('------------ID------------', req.body['id']);
         console.log('---------REQUEST UDATE------', req.body['dataToUpdate']);
-        const record = {
-            originalId: req.body.id,
-            dataToUpdate: req.body.dataToUpdate,
-            _authId: req.user._authId
-        };
-        this.userRepo.update(record)
-            .then(result => {
-                console.log('result form database .', result);
-                if (!result) {
-                    res.send(result);
-                }
-                res.send(` NO such user exits ${result}`);
-            })
-            .catch(err => res.send(err));
+        try {
+            const record = {
+                originalId: req.body.id,
+                dataToUpdate: req.body.dataToUpdate,
+                _authId: req.user._authId
+            };
+            const result = await this.userRepo.update(record);
+            if (result !== null) {
+                return this.systemResponse.success(res, req, 'user updated successfully', 200);
+            }
+            return this.systemResponse.failure(res, req, Error(`fields are not correct.`), 'Invalid id', 500);
+        } catch (error) {
+            return this.systemResponse.failure(res, req, error, 'Invalid id', 500);
+        }
     }
 
-    deleteUser = (req: IRequest, res: Response): void => {
+    deleteUser = async (req: IRequest, res: Response): Promise<void> => {
         console.log('---------DELETE TRAINEE------------');
-        const deleteRecord = {
-            _authId: req.user._authId,
-            recordId: req.params.id
-        };
-        this.userRepo.delete(deleteRecord)
-            .then(user => {
-                console.log('user ------', user);
-                if (!user) {
-                    res.send(user);
-                }
-                res.send('----No such User exits.-------');
-            })
-            .catch(err => res.send(err));
+        try {
+            const deleteRecord = {
+                _authId: req.user._authId,
+                recordId: req.params.id
+            };
+            const result = await this.userRepo.delete(deleteRecord);
+            if (result !== null) {
+                return this.systemResponse.success(res, req, `user deleted successfully`, 200);
+            }
+
+        } catch (error) {
+            this.systemResponse.failure(res, req, error , `can't delete user`, 500);
+        }
     }
 
     userProfile = (req: IRequest, res: Response): void => {
@@ -94,7 +101,7 @@ class UserController {
             });
     }
 
-     login =  async (req: IRequest, res: Response): Promise<void> => {
+    login = async (req: IRequest, res: Response): Promise<void> => {
         const email = req.body.email;
         const password = req.body.password;
         const doc = await this.userRepo.IsEmailExits(email);
@@ -105,7 +112,7 @@ class UserController {
             if (!match) {
                 res.send(`Invalid password.`);
             }
-            const token = jwt.sign({email, password}, config.SECRECT_KEY);
+            const token = jwt.sign({ email, password }, config.SECRECT_KEY);
             res.send(token);
         } else {
             res.send(`Invalid email`);

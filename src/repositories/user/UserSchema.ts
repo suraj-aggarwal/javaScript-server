@@ -9,6 +9,7 @@ class UserSchema extends VersionableSchema {
             address: String,
             mod: Number,
             dob: Date,
+            role: String,
             hobbies: [String],
         };
         super(userSchema, option);

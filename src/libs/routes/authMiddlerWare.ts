@@ -4,7 +4,6 @@ import * as jwt from 'jsonwebtoken';
 import hasPermission from '../utils/permissions';
 import UserRepository from '../../repositories/user/UserRepository';
 import { IRequest } from '../interface';
-import { ConnectionStates } from 'mongoose';
 
 const authMiddlerWare = (module: string, permission: string) => (req: IRequest, res: Response, next: NextFunction) => {
     console.log('----------------------AUTHMIDDLE WARE------------------');

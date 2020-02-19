@@ -9,6 +9,7 @@ console.log('------------TRAINEE ROUTER---------');
 traineeRoute.get('/', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.get), Controller.listTrainee)
     .post('/', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.create), Controller.addTrainee)
     .put('/', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.update), Controller.updateTrainee)
-    .delete('/:id', authMiddlerWare('getUsers', 'delete'), validateTrainee(validate.delete), Controller.deleteTrainee);
+    .delete('/:id', authMiddlerWare('getUsers', 'delete'), validateTrainee(validate.delete), Controller.deleteTrainee)
+    .get('/search', Controller.search);
 
 export default traineeRoute;

@@ -18,6 +18,12 @@ const validate = {
             regex: /^[a-zA-Z][a-zA-Z ]+$/,
             in: ['body'],
             errorMessage: 'Name is required',
+        },
+        role: {
+            required: true,
+            string: true,
+            regex: /^[a-zA-Z][a-zA-Z ]+$/,
+            in: ['body']
         }
     }, delete: {
         id: {

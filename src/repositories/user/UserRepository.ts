@@ -44,6 +44,14 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
     public IsEmailExits = (email: string) => {
         return super.IsEmailExits(email);
     }
+
+    public getAllRecord = (query) => {
+        return super.getAllRecord(query);
+    }
+
+    public search = (query) => {
+        return super.search(query);
+    }
 }
 
 export default UserRepository;

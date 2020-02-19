@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { request } from 'express';
 
 class VersionableRepository<D extends mongoose.Document, M extends mongoose.Model<D> > {
 
@@ -52,6 +53,26 @@ class VersionableRepository<D extends mongoose.Document, M extends mongoose.Mode
     public async IsEmailExits(email): Promise<D> {
         console.log('---------IS EXITS-------------');
         return await this.modelType.findOne({email});
+    }
+
+    public async getAllRecord(filter): Promise<D[]> {
+        console.log('---------------getAllRecords-------------', filter);
+        const logSkip = Number(filter.skip);
+        const logLimit = Number(filter.limit);
+        const result =  await this.modelType.find(filter.query).sort(filter.option).limit(logLimit).skip(logSkip);
+        console.log(result);
+        return result;
+    }
+
+    public async search(query): Promise<D> {
+        console.log('-----------search-----------');
+        const result = await this.modelType.findOne(query);
+        if (result) {
+            console.log('--------Inside If-------');
+            return result.toJSON();
+        }
+        console.log('--------Outside If------------');
+        return result;
     }
 }
 

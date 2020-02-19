@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
+import UserRepository from '../../repositories/user/UserRepository';
 
 class TraineeController {
     static instance: TraineeController;
+    public userRepo = new UserRepository();
     static getInstance(): TraineeController {
         if (TraineeController.instance instanceof TraineeController) {
             return TraineeController.instance;
@@ -20,29 +22,20 @@ class TraineeController {
         });
     }
 
-    listTrainee = (req: Request, res: Response): void => {
+    listTrainee = async (req: Request, res: Response) => {
         console.log('---------TRAINEE LIST------------');
-        const list = [
-             {
-                id: '1',
-                traineeName: 'Suraj Aggarwal',
-                traineeEmail: 'suraj@gmail.com',
-                department: 'IT'
-            },
-             {
-                id: '2',
-                traineeName: 'Vishal Malhotra',
-                traineeEmail: 'vishal@gmail.com',
-                department: 'IT'
-            },
-             {
-                id: '3',
-                traineeName: 'Swapnil Parithosh',
-                traineeEmail: 'swapnil@gmail.com',
-                department: 'IT'
-            }
-        ];
-        res.send(list);
+        const query: object = {role: 'trainee', deletedBy: undefined};
+        const option: string = 'createdAt';
+        const filter: object = {query, skip: req.query.skip, limit: req.query.limit, option};
+        const result = await this.userRepo.getAllRecord(filter);
+        const count = result.length;
+        console.log('------COUNT-------', count);
+        const resultSet = {count, result};
+        if (result !== null) {
+            res.send(resultSet);
+        } else {
+            res.send(resultSet);
+        }
     }
 
     updateTrainee = (req: Request, res: Response): void => {
@@ -65,6 +58,21 @@ class TraineeController {
             department: 'IT'
         };
         res.send(trainee);
+    }
+
+    search = (req: Request, res: Response): void => {
+        console.log('-----------search-----------');
+        try {
+            console.log(req.query);
+            const result = this.userRepo.search(req.query);
+            if (result) {
+                res.send(result);
+            } else {
+                res.send(result);
+            }
+        } catch (err) {
+                res.send(err);
+        }
     }
 }
 
