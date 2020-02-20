@@ -1,5 +1,4 @@
 import { userModel } from './UserModel';
-import * as mongoose  from 'mongoose';
 
 
 class UserRepository {
@@ -14,13 +13,11 @@ class UserRepository {
 
     public delete = (id: string) => {
         console.log('----------DELETE USER-------------', id);
-        return userModel.deleteOne(id);
+        return userModel.deleteOne({_id: id});
     };
 
     public update = (id: string, dataToUpdate: object) => {
-        console.log('-------------UPDATE USER------------', id);
-        console.log('-----------dataToUpdate------', dataToUpdate);
-        return userModel.findByIdAndUpdate();
+        return userModel.findByIdAndUpdate({_id: id}, dataToUpdate);
     }
 
     public isExits = (id: string, email: string) => {
@@ -30,7 +27,7 @@ class UserRepository {
         return userModel.exists(condition);
     }
 
-public profile = (_id: string) => {
+    public profile = (_id: string) => {
         console.log('----------------User Profile Inside Controller--------------');
         return userModel.findOne({_id});
     }

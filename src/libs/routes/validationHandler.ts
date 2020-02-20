@@ -6,40 +6,22 @@ const validateTrainee = config => {
         const parameters: string[] = Object.keys(config);
         const errorLogs: string[] = [];
         parameters.forEach(parameter => {
-            const validaters: string[] = Object.keys(config[parameter]);
-            const isRequiredAvaliable = validaters.includes('required');
-            const isErrorMessageAvaliable = validaters.includes('errorMessage');
-            const isNumberAvaliable = validaters.includes('number');
-            const isStringAvaliable = validaters.includes('string');
-            const isObjectAvaliable = validaters.includes('isObject');
-            const isDefaultAvaliable = validaters.includes('default');
-            const isRegexAvaliable = validaters.includes('regex');
-            const isCustomAvaliable = validaters.includes('custom');
-            const isInAvaliable = validaters.includes('in');
-
-            const isRequired: boolean = (isRequiredAvaliable) ? config[parameter]['required'] : isRequiredAvaliable;
-            const errorMessage: string = (isErrorMessageAvaliable) ? config[parameter]['errorMessage'] : undefined;
-            const isNumber: boolean = (isNumberAvaliable) ? config[parameter]['number'] : isNumberAvaliable;
-            const isString: boolean = (isStringAvaliable) ? config[parameter]['string'] : isStringAvaliable;
-            const isObject: boolean = (isObjectAvaliable) ? config[parameter]['isObject'] : isObjectAvaliable;
-            const constant: number = (isDefaultAvaliable) ? config[parameter]['default'] : undefined;
-            const regex: RegExp = (isRegexAvaliable) ? config[parameter]['regex'] : undefined;
-            const custom: any = (isCustomAvaliable) ? config[parameter]['custom'] : undefined;
-            const inputs: string[] = (isInAvaliable) ? config[parameter]['in'] : undefined;
-
-
-
-            if (inputs !== undefined) {
-
+            const isRequired: boolean = config[parameter].required ? config[parameter].required : false;
+            const errorMessage: string = config[parameter].errorMessage ? config[parameter].errorMessage : undefined;
+            const isNumber: boolean = config[parameter].number ? config[parameter].number : false;
+            const isString: boolean = config[parameter].string ? config[parameter].string : false;
+            const isObject: boolean = config[parameter].isObject ? config[parameter].isObject : false;
+            const constant: number = config[parameter].default ? config[parameter].default : undefined;
+            const regex: RegExp = config[parameter].regex ? config[parameter].regex : undefined;
+            const custom: any = config[parameter].custom ? config[parameter].custom : undefined;
+            const inputs: string[] = config[parameter].in ? config[parameter].in : undefined;
+            if (inputs) {
                 inputs.forEach(input => {
-
                     const clientinputsFields: string[] = Object.keys(req[input]);
                     const isFieldExits: boolean = clientinputsFields.includes(parameter);
-
                     if (!isFieldExits && isRequired) {
                         errorLogs.push(`${parameter} is Required`);
                     }
-
                     if (isFieldExits) {   // check the type of input.
                         const value: string = req[input][parameter];
                         const type: string = typeof value;
@@ -51,26 +33,23 @@ const validateTrainee = config => {
                             errorLogs.push(`${parameter} object type is Required`);
                         }
                     }
-
-                    if (isFieldExits && custom !== undefined) { // check custom case if exits
-                        console.log('custom');
+                    if (isFieldExits && custom) { // check custom case if exits
+                        try {
+                           custom(req[input][parameter]);
+                        } catch (err) {
+                            errorLogs.push(err);
+                        }
                     }
-
-                    if (isFieldExits && constant !== undefined && (req[input][parameter] === undefined || req[input][parameter] === null)) {
+                    if (constant && !req[input][parameter]) {
                         req[input][parameter] = constant;
                     }
-
-                    if (isFieldExits && regex !== undefined && !regex.test(req[input][parameter]) && errorMessage !== undefined) {
-                        errorLogs.push(` ${req[input][parameter]} format is not correct`);
+                    if (isFieldExits && regex && !regex.test(req[input][parameter]) ) {
+                        errorLogs.push(` ${parameter} is Invalid`);
                     }
                 });
             }
         });
-        if (errorLogs.length !== 0) {
-            next(errorLogs);
-        }
-        next();
+         (errorLogs.length !== 0) ?  next(errorLogs) : next();
     };
 };
-
 export default validateTrainee;

@@ -20,8 +20,8 @@ class UserController {
 
     addUser = (req: Request, res: Response): void => {
         console.log('---------ADD USER------------');
-        const user: {id , name, email, mod, dob, hobbies } = req.body;
-        this.userRepo.create(req.body).then(err => {
+        const record = req.body;
+        this.userRepo.create(record).then(err => {
             res.send('Trainee added Successfully');
             }
         ).catch(err => {
@@ -34,22 +34,23 @@ class UserController {
 
     updateUser = (req: Request, res: Response): void => {
         console.log('----------updateUser-----------');
-        console.log('------------ID------------', req.body['id']);
-        console.log('---------REQUEST UDATE------', req.body['dataToUpdate']);
-        this.userRepo.update(req.body['id'],req.body['dataToUpdate'])
+        const {id, dataToUpdate} = req.body;
+        this.userRepo.update(id, dataToUpdate)
         .then(result => res.send(result))
         .catch(err => res.send(err));
     }
 
     deleteUser = (req: Request, res: Response): void => {
         console.log('---------DELETE TRAINEE------------');
-        this.userRepo.delete(req['id'])
-        .then(user => res.send(user))
-        .catch(err => res.send(err));
+       const { id } = req.params;
+        this.userRepo.delete(id)
+        .then(user => res.send(`Deletion Sucessfull ${{user}}`))
+        .catch(err => res.send(`Deletion Failed ${err}`));
     }
 
     userProfile = (req: Request, res: Response): void => {
-        this.userRepo.profile(req.body['id'])
+        const{ id } = req.body;
+        this.userRepo.profile(id)
         .then(profile => {
                 console.log('--------user Profile----------', profile);
                 res.send(profile);
