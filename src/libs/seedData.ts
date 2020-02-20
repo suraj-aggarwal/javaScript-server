@@ -1,6 +1,4 @@
 import UserRepository from '../repositories/user/UserRepository';
-import { Document } from 'mongoose';
-import IUserModel from '../repositories/user/IUserModel';
 const userRepo = new UserRepository();
 export const seedData = () => {
     const seedUser = {
