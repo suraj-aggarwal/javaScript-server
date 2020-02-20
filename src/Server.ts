@@ -3,7 +3,7 @@ import * as  bodyParser from 'body-parser';
 import notFoundRoutes from './libs/routes/notFoundRoutes';
 import errorHandler from './libs/routes/errorHandler';
 import mainRoute from './router';
-import validate from './libs/routes/validationHandler';
+import Database from './libs/Database';
 
 
 class Server {
@@ -19,19 +19,23 @@ class Server {
     }
 
     run = (): Server => {
-        const { app, config: { PORT } }: Server = this;
-        app.listen(PORT, (err) => {
-            if (err) {
-                console.log('error');
-            } else {
-                console.log('server is running at port ', PORT);
-            }
-
-        });
-        return this;
+        const { app, config: { PORT , MONGO_URL: connectionUrl} }: Server = this;
+            Database.open(connectionUrl).then((success) => {
+              console.log(success);
+                app.listen(PORT, err => {
+                    if (err) {
+                        throw new Error('Failed to run app');
+                    } else {
+                        console.log(`App successfully started at port ${PORT}`);
+                    }
+                });
+            }).catch(err => {
+                console.log(err);
+            });
+        return  this;
     }
 
-    setupRoutes = (): Server => {
+    setupRoutes = (): void => {
         const { app } = this;
         app.use('/health-check', (req: express.Request, res: express.Response) => {
             console.log(req.body);
@@ -40,7 +44,6 @@ class Server {
         app.use('/api', mainRoute);
         app.use(notFoundRoutes);
         app.use(errorHandler);
-        return this;
     }
 
     initBodyParser = (): void => {
