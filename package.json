@@ -53,6 +53,7 @@
     "@types/mongoose": "^5.7.0",
     "bcrypt": "^3.0.8",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.8.11"
+    "mongoose": "^5.8.11",
+    "swagger": "^0.7.5"
   }
 }
