@@ -20,20 +20,22 @@ class Server {
 
     run = (): Server => {
         const { app, config: { PORT , MONGO_URL: connectionUrl} }: Server = this;
-            Database.open(connectionUrl).then(() => {
+            Database.open(connectionUrl).then((success) => {
+              console.log(success);
                 app.listen(PORT, err => {
                     if (err) {
-                        console.log('failed to fun app');
-                        throw new Error('failed to run app.');
+                        throw new Error('Failed to run app');
                     } else {
                         console.log(`App successfully started at port ${PORT}`);
                     }
                 });
+            }).catch(err => {
+                console.log(err);
             });
         return  this;
     }
 
-    setupRoutes = (): Server => {
+    setupRoutes = (): void => {
         const { app } = this;
         app.use('/health-check', (req: express.Request, res: express.Response) => {
             console.log(req.body);
@@ -42,7 +44,6 @@ class Server {
         app.use('/api', mainRoute);
         app.use(notFoundRoutes);
         app.use(errorHandler);
-        return this;
     }
 
     initBodyParser = (): void => {
