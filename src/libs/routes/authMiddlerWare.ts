@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import configuration from '../../config/configuration';
 import * as jwt from 'jsonwebtoken';
 import hasPermission from '../utils/permissions';
