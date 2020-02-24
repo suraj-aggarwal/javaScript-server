@@ -1,4 +1,4 @@
-import { Request, Response, request } from 'express';
+import { Request, Response } from 'express';
 import UserRepository from '../../repositories/user/UserRepository';
 import { IRequest } from '../../libs/interface';
 

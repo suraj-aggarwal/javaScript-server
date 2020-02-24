@@ -1,6 +1,7 @@
 const validate = {
     create:
     {
+<<<<<<< HEAD
         id: {
             required: false,
             string: true,
@@ -13,6 +14,8 @@ const validate = {
                 // };
             }
         },
+=======
+>>>>>>> be8cb4ec034b2ffa545c2e0c6bed4276ab9a5459
         name: {
             required: true,
             regex: /^[a-zA-Z][a-zA-Z ]+$/,

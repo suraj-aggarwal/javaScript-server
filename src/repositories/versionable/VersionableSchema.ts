@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { IVersionableDocument } from './IversionableDocument';
 export class VersionableSchema extends mongoose.Schema {
     constructor(schema, options) {
         const genericSchema = new mongoose.Schema({

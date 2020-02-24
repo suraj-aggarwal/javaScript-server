@@ -4,12 +4,10 @@ import { seedData } from './seedData';
 class Database {
 
     static open = (uri: string) => new Promise( (resolve, reject)  => {
-        mongoose.connect(uri, { useNewUrlParser: true , useUnifiedTopology: true }, (err) => { 
+        mongoose.connect(uri, { useNewUrlParser: true , useUnifiedTopology: true }, (err) => {
             if (err) {
-                console.log(err.message);
-                return reject('connnection failed');
+                reject('database connnection failed');
             } else {
-                console.log('connection is successfull');
                 seedData();
                 return resolve('connection is successfull');
             }
