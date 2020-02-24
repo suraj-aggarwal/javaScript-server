@@ -14,15 +14,11 @@ class UserController {
 
     private userRepo = new UserRepository();
 
-    private count = () => {
-        this.userRepo.count();
-    }
-
     addUser = (req: Request, res: Response): void => {
         console.log('---------ADD USER------------');
         const record = req.body;
-        this.userRepo.create(record).then(err => {
-            res.send('Trainee added Successfully');
+        this.userRepo.create(record).then(result => {
+            res.send(`Trainee added Successfully ${result}`);
             }
         ).catch(err => {
             res.send(err);
@@ -36,7 +32,7 @@ class UserController {
         console.log('----------updateUser-----------');
         const {id, dataToUpdate} = req.body;
         this.userRepo.update(id, dataToUpdate)
-        .then(result => res.send(result))
+        .then(result => res.send(`Update successfully ${result}`))
         .catch(err => res.send(err));
     }
 
@@ -47,7 +43,7 @@ class UserController {
         .then(user => {
             console.log(user);
             if (user) {
-                res.send(`Deletion Sucessfull ${{user}}`);
+                res.send(`Deletion Sucessfull ${user}`);
             } else {
                 res.send(`No such user exits`);
             }
@@ -60,10 +56,9 @@ class UserController {
         this.userRepo.profile(id)
         .then(profile => {
                 console.log('--------user Profile----------', profile);
-                res.send(profile);
+                res.send(`My profile ${profile}`);
             }).catch(err => {
                 res.send(err);
-                console.log();
         });
     }
 }
