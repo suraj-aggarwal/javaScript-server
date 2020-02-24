@@ -56,7 +56,7 @@ class TraineeController {
         res.send(trainee);
     }
 
-    deleteTrainee = (req: Request, res: Response): void => {
+    deleteTrainee = (req: Request, res: Response) => {
         console.log('---------DELETE TRAINEE------------');
         const trainee = {
             id: '2',
