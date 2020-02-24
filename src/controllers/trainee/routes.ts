@@ -30,6 +30,7 @@ traineeRoute.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
  *              content: {}
  *          404:
  *              description: Invalid Id
+ *
  */
 
 traineeRoute.get('/', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.get), Controller.listTrainee)
