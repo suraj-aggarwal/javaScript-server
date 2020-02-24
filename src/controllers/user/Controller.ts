@@ -66,6 +66,7 @@ class UserController {
 
     isExits = (id: string, email: string): boolean => {
         this.userRepo.isExits(id, email).then(permission => {
+            console.log('-----------------permissions-----------', permission);
             return permission;
         }).catch(err => {
             return false;
