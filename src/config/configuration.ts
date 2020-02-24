@@ -2,7 +2,6 @@ import IConfig from './IConfig';
 import { config } from 'dotenv';
 
 config();
-console.log(process.env.SECRET_KEY);
 const configuration: IConfig = {
     PORT: process.env.PORT,
     NODE_ENV: process.env.NODE_ENV,

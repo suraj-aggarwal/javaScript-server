@@ -44,7 +44,14 @@ class UserController {
         console.log('---------DELETE TRAINEE------------');
        const { id } = req.params;
         this.userRepo.delete(id)
-        .then(user => res.send(`Deletion Sucessfull ${{user}}`))
+        .then(user => {
+            console.log(user);
+            if (user) {
+                res.send(`Deletion Sucessfull ${{user}}`);
+            } else {
+                res.send(`No such user exits`);
+            }
+        })
         .catch(err => res.send(`Deletion Failed ${err}`));
     }
 
