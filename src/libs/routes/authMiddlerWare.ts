@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import configuration from '../../config/configuration';
 import * as jwt from 'jsonwebtoken';
 import hasPermission from '../utils/permissions';
-import UserRepository from '../../repositories/user/UserRepository';
+import userController from '../../controllers/user/Controller';
 
 const authMiddlerWare = (module: string, permission: string) => (req: Request, res: Response, next: NextFunction) => {
     console.log('----------------------AUTHMIDDLE WARE------------------');
@@ -11,6 +11,12 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
         const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
         const {id, email} = decodedPayload;
         const exits = isExits(id, email);
+        if (exits) {
+            res.send('user Exits in database.');
+            jwt.sign({ id , email , iat: Math.floor(Date.now() / 1000) - 30 }, 'shhhhh');
+        } else {
+            res.send('user does not exits in database');
+        }
         if (!decodedPayload) {
             res.send(
             {   error : 'Unauthorized Access.',
@@ -36,8 +42,7 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
 
 const isExits = (id: string, email: string) => {
     console.log('----------------Is Exits----------------');
-    const userRepo: UserRepository = new UserRepository();
-    return userRepo.isExits(id, email);
+    return userController.isExits(id, email);
 };
 
 export default authMiddlerWare;
