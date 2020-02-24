@@ -14,4 +14,14 @@ interface Imodule {
     delete: string[];
 }
 
-export { Iuser, Ipermissions };
+interface IUser {
+    _id: string;
+    name: string;
+    email: string;
+    address: string;
+    mod: number;
+    dob: Date;
+    hobbies: [string];
+}
+
+export { Iuser, Ipermissions, IUser };

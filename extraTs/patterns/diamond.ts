@@ -22,7 +22,7 @@ const diamond = (rows: number) => {
     console.log(str);
 };
 
-const validateDiamond = (rows: any) => {
+const validateDiamond = (rows) => {
     const regex = /^([2-9]|1[0])$/;
     try {
         if (!regex.test(rows)) {

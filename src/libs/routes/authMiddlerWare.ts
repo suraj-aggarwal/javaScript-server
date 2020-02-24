@@ -7,7 +7,7 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
     console.log('----------------------AUTHMIDDLE WARE------------------');
     try {
         const token: string = req.headers.authorization;
-        const decodedPayload: any = jwt.verify(token, configuration.SECRECT_KEY);
+        const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
         if (!decodedPayload) {
             res.send(
             {   error : 'Unatuhorized Acess.',

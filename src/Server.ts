@@ -19,8 +19,8 @@ class Server {
     }
 
     run = (): Server => {
-        const { app, config: { PORT , MONGO_URL: connectionUrl} }: Server = this;
-            Database.open(connectionUrl).then((success) => {
+        const { app, config: { PORT , MONGO_URL: uri} }: Server = this;
+            Database.open(uri).then((success) => {
               console.log(success);
                 app.listen(PORT, err => {
                     if (err) {
