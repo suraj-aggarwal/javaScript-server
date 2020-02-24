@@ -1,6 +1,6 @@
-import { diamond, equilateral } from './patterns/'
+import { diamond, equilateral } from './patterns'
 import { users } from './constants'
-import { validation, hasPermission } from './utils/'
+import { validation, hasPermission } from './utils'
 
 diamond(process.argv[2])
 equilateral(process.argv[3])

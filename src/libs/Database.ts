@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { seedData } from './seedData';
 
 class Database {
 
@@ -7,6 +8,7 @@ class Database {
             if (err) {
                 reject('database connnection failed');
             } else {
+                seedData();
                 resolve('connection is successfull');
             }
         });
