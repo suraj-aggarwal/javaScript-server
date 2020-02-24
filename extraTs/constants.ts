@@ -1,4 +1,4 @@
-import { Ipermissions, Iusers } from './interface';
+import { Ipermissions, Iuser } from './interface';
 
 const permissions: Ipermissions = {
     'getUsers': {
@@ -9,7 +9,7 @@ const permissions: Ipermissions = {
     }
 };
 
-const users: Iusers[] = [
+const users: Iuser[] = [
     {
         traineeName: 'suraj.aggarwal@succesive.tech',
         reviewerName: 'madhav.bansal@successive.tech'

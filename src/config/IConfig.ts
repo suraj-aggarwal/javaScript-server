@@ -4,5 +4,4 @@ interface IConfig {
     SECRET_KEY: string;
     MONGO_URL: string;
 }
-
 export default IConfig;
