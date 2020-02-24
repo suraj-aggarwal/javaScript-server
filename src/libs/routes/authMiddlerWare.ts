@@ -12,8 +12,7 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
         const {id, email} = decodedPayload;
         const exits = isExits(id, email);
         if (exits) {
-            res.send('user Exits in database.');
-            jwt.sign({ id , email , iat: Math.floor(Date.now() / 1000) - 30 }, 'shhhhh');
+            jwt.sign({ id, email, iat: Math.floor(Date.now() / 1000) - 30 }, 'shhhhh');
         } else {
             res.send('user does not exits in database');
         }
