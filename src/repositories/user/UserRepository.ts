@@ -17,10 +17,10 @@ class UserRepository {
     };
 
     public update = (id: string, dataToUpdate: object) => {
-        return userModel.findByIdAndUpdate({_id: id}, dataToUpdate);
+        return userModel.findByIdAndUpdate({_id: id}, dataToUpdate, {new : true});
     }
 
-    public isExits = (id: string, email: string) => {
+    public isExists = (id: string, email: string) => {
         console.log('----------isExits-----------', id, email);
         const _id = id;
         const condition = { _id: id, email };

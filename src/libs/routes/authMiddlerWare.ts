@@ -19,11 +19,14 @@ const authMiddlerWare = (module: string, permission: string) => (req: Request, r
         }
 
         const {id, email} = decodedPayload;
-        const exits = userRepo.isExits(id, email);
-        if (!exits) {
-            res.send('user does not exits in database');
+        const isUserExists = userRepo.isExists(id, email);
+        if (!isUserExists) {
+            res.send({
+                error: 'User does not exists',
+                Stauts: 403,
+                message: 'forbidden'
+            });
         }
-        console.log('boolean', exits);
         if (!hasPermission(module, permission, decodedPayload.role)) {
             res.send(
                 {   error : 'Permission Denied.',
