@@ -1,16 +1,18 @@
 import { Request, Response } from 'express';
 import UserRepository from '../../repositories/user/UserRepository';
+import SystemResponse from '../../libs/routes/SystemResponse';
 
 class UserController {
 
     static instance: UserController;
+    private systemResponse: SystemResponse = new SystemResponse();
     static getInstance(): UserController {
         if (UserController.instance instanceof UserController) {
             return UserController.instance;
         }
         return UserController.instance = new UserController();
     }
-    private constructor() {}
+    private constructor() { }
 
     private userRepo = new UserRepository();
 
@@ -18,10 +20,10 @@ class UserController {
         console.log('---------ADD USER------------');
         const record = req.body;
         this.userRepo.create(record).then(result => {
-            res.send(`Trainee added Successfully ${result}`);
-            }
+            this.systemResponse.success(req, res, `Trainee added Successfully`, 200, result);
+        }
         ).catch(err => {
-            res.send(err);
+            this.systemResponse.failure(req, res, err.message, 500, err);
         });
     }
     listUsers = (req: Request, res: Response): void => {
@@ -30,36 +32,46 @@ class UserController {
 
     updateUser = (req: Request, res: Response): void => {
         console.log('----------updateUser-----------');
-        const {id, dataToUpdate} = req.body;
+        const { id, dataToUpdate } = req.body;
         this.userRepo.update(id, dataToUpdate)
-        .then(result => res.send(`Update successfully ${result}`))
-        .catch(err => res.send(err));
+            .then(result => this.systemResponse.success(req, res, `Trainee updated Successfully`, 200, result))
+            .catch(err => this.systemResponse.failure(req, res, err.message, 500, err));
     }
 
     deleteUser = (req: Request, res: Response): void => {
         console.log('---------DELETE TRAINEE------------');
-       const { id } = req.params;
+        const { id } = req.params;
         this.userRepo.delete(id)
-        .then(user => {
-            console.log(user);
-            if (user) {
-                res.send(`Deletion Sucessfull ${user}`);
-            } else {
-                res.send(`No such user exits`);
-            }
-        })
-        .catch(err => res.send(`Deletion Failed ${err}`));
+            .then(user => {
+                console.log(user);
+                if (user) {
+                    this.systemResponse.success(req, res, `Trainee deleted Successfully`, 200, user);
+                } else {
+                    this.systemResponse.failure(req, res, 'No Such userExits', 500, user);
+                }
+            })
+            .catch(err => this.systemResponse.failure(req, res, 'Deletion Failed', 500, err));
     }
 
     userProfile = (req: Request, res: Response): void => {
-        const{ id } = req.body;
+        const { id } = req.body;
         this.userRepo.profile(id)
-        .then(profile => {
+            .then(profile => {
                 console.log('--------user Profile----------', profile);
-                res.send(`My profile ${profile}`);
+                this.systemResponse.success(req, res, `Trainee deleted Successfully`, 200, profile);
             }).catch(err => {
-                res.send(err);
+                this.systemResponse.failure(req, res, 'No Such userExits', 500, err);
+            });
+    }
+
+    isExits = (id: string, email: string): boolean => {
+        this.userRepo.isExists(id, email).then(permission => {
+            console.log('-----------------permissions-----------', permission);
+            return permission;
+        }).catch(err => {
+            return false;
         });
+        return false;
     }
 }
 
