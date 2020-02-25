@@ -4,6 +4,8 @@ import notFoundRoutes from './libs/routes/notFoundRoutes';
 import errorHandler from './libs/routes/errorHandler';
 import mainRoute from './router';
 import Database from './libs/Database';
+import swaggerSpecs from './api-docs';
+import * as swaggerUi from 'swagger-ui-express';
 
 class Server {
     private app: express.Application;
@@ -40,6 +42,7 @@ class Server {
             res.send('I am Ok');
         });
         app.use('/api', mainRoute);
+        app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
         app.use(notFoundRoutes);
         app.use(errorHandler);
         return this;
