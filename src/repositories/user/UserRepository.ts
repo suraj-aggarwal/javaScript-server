@@ -27,7 +27,7 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
         return super.update(record);
     }
 
-    public isExits = (id: string, email: string) => {
+    public isExists = (id: string, email: string) => {
         console.log('----------isExits-----------', id, email);
         const _id = id;
         const condition = { _id: id, email };

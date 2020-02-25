@@ -25,7 +25,7 @@ class UserController {
         console.log('---------ADD USER------------');
         const _authId = req.user._authId;
         const data = req.body;
-        const record = {data , _authId};
+        const record = {...data , _authId};
         this.userRepo.create(record).then(result => {
             this.systemResponse.success(req, res, `Trainee added Successfully`, 200, result);
         }
@@ -67,14 +67,14 @@ class UserController {
         this.userRepo.profile(id)
             .then(profile => {
                 console.log('--------user Profile----------', profile);
-                this.systemResponse.success(req, res, `Trainee deleted Successfully`, 200, profile);
+                this.systemResponse.success(req, res, `User Profile`, 200, profile);
             }).catch(err => {
                 this.systemResponse.failure(req, res, 'No Such userExits', 500, err);
             });
     }
 
-    isExits = (id: string, email: string): boolean => {
-        this.userRepo.isExits(id, email).then(permission => {
+    isExists = (id: string, email: string): boolean => {
+        this.userRepo.isExists(id, email).then(permission => {
             console.log('-----------------permissions-----------', permission);
             return permission;
         }).catch(err => {
