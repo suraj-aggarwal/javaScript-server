@@ -14,15 +14,10 @@ const errorHandler = (errs, req: Request, res: Response, next: NextFunction) => 
         });
         return res.send(errorlogs);
     } else {
-<<<<<<< HEAD
-        return res.send({
-            error: error.message,
-=======
         res.send({
             error : errs.message,
->>>>>>> be8cb4ec034b2ffa545c2e0c6bed4276ab9a5459
             message : 'error',
-            status : 500,
+            status : 404,
             timeStamp : new Date()
         });
     }

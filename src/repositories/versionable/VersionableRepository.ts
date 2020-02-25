@@ -24,7 +24,7 @@ class VersionableRepository<D extends mongoose.Document, M extends mongoose.Mode
 
     public async update(record): Promise<D> {
     console.log('----------IN VERSIONABLE REPO---------', record);
-    const query = {originalId : record.originalId, deletedBy: undefined};
+    const query = {originalId : record.id, deletedBy: undefined};
     const update = {deletedAt : Date.now(), deletedBy: record._authId};
     const result = await this.modelType.findOneAndUpdate(query, update);
     const doc = result.toJSON();
