@@ -20,7 +20,7 @@ export const seedData = () => {
     userRepo.count().then( (count: number) => {
         if (!count) {
             return userRepo.create(seedUser).then(
-            user => console.log(user)
+            user => console.log('User Added Successfully', user)
             ).catch(err => console.log(err));
         }
         console.log(`number of users ${count}`);

@@ -1,18 +1,19 @@
-import { Response, Request } from 'express';
+import { Request, Response } from 'express';
 
 class SystemResponse {
-    success = (res: Response, Resquest: Request, message: string, status: number) => {
+    public success(req: Request, res: Response, message: string, code: number, resultSet: object) {
         res.send({
+            code,
             message,
-            status
+            resultSet,
         });
     }
 
-    failure = (res: Response, Resquest: Request, error: Error , message: string, status: number) => {
+    public failure(req: Request, res: Response, message: string, code: number, resultSet: object) {
         res.send({
-            error,
-            message,
-            status
+            code,
+            error: resultSet,
+            message
         });
     }
 }

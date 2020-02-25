@@ -5,6 +5,7 @@ import errorHandler from './libs/routes/errorHandler';
 import mainRoute from './router';
 import Database from './libs/Database';
 
+
 class Server {
     private app: express.Application;
     constructor(private config) {
@@ -18,22 +19,23 @@ class Server {
     }
 
     run = (): Server => {
-        const { app, config: { PORT, MONGO_URL: connectionUrl } }: Server = this;
-        Database.open(connectionUrl).then(() => {
-            app.listen(PORT, err => {
-                if (err) {
-                    console.log('failed to fun app');
-                    throw new Error('failed to run app.');
-                } else {
-                    console.log(`App successfully started at port ${PORT}`);
-                }
+        const { app, config: { PORT , MONGO_URL: uri} }: Server = this;
+            Database.open(uri).then((success) => {
+              console.log(success);
+                app.listen(PORT, err => {
+                    if (err) {
+                        throw new Error('Failed to run app');
+                    } else {
+                        console.log(`App successfully started at port ${PORT}`);
+                    }
+                });
+            }).catch(err => {
+                console.log(err);
             });
-        });
-        return this;
+        return  this;
     }
 
-    setupRoutes = (): Server => {
-
+    setupRoutes = (): void => {
         const { app } = this;
         app.use('/health-check', (req: express.Request, res: express.Response) => {
             console.log(req.body);
@@ -42,7 +44,6 @@ class Server {
         app.use('/api', mainRoute);
         app.use(notFoundRoutes);
         app.use(errorHandler);
-        return this;
     }
 
     initBodyParser = (): void => {
