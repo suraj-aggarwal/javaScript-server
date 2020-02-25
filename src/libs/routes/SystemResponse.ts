@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 
-class SystemRespone {
+class SystemResponse {
     success = (res: Response, Resquest: Request, message: string, status: number) => {
         res.send({
             message,
@@ -17,4 +17,4 @@ class SystemRespone {
     }
 }
 
-export default SystemRespone;
+export default SystemResponse;
