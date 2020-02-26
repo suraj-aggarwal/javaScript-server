@@ -19,10 +19,6 @@ class UserController {
 
   private userRepo = new UserRepository();
 
-  private count = () => {
-    this.userRepo.count();
-  };
-
   addUser = async (req: IRequest, res: Response): Promise<void> => {
     console.log('---------ADD USER------------');
     try {
