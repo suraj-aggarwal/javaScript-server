@@ -18,9 +18,9 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
         return super.create(data);
     }
 
-    public delete = (id: object) => {
-        console.log('----------DELETE USER-------------', id);
-        return super.delete({_id: id});
+    public delete = (record) => {
+        console.log('----------DELETE USER-------------', record);
+        return super.delete({id: record.id, _authId: record._authId});
     };
 
     public update = (record) => {
@@ -29,7 +29,6 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
 
     public isExists = (id: string, email: string) => {
         console.log('----------isExits-----------', id, email);
-        const _id = id;
         const condition = { _id: id, email };
         return userModel.exists(condition);
     }

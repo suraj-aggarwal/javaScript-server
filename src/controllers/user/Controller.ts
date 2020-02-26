@@ -17,49 +17,64 @@ class UserController {
 
     private userRepo = new UserRepository();
 
-    private count = () => {
+    public count = () => {
         this.userRepo.count();
     }
 
-    addUser = (req: IRequest, res: Response): void => {
+     addUser = async (req: IRequest, res: Response): Promise<void> => {
         console.log('---------ADD USER------------');
-        const _authId = req.user._authId;
-        const data = req.body;
-        const record = {...data , _authId};
-        this.userRepo.create(record).then(result => {
-            this.systemResponse.success(req, res, `Trainee added Successfully`, 200, result);
-        }
-        ).catch(err => {
+
+        try {
+            const _authId = req.user._authId;
+            const data = req.body;
+            const record = {...data , _authId};
+            const result = await this.userRepo.create(record);
+            if (result) {
+                this.systemResponse.success(req, res, `Trainee added Successfully`, 200, result);
+            } else {
+                this.systemResponse.success(req, res, `Unauthorized User`, 403, result);
+            }
+
+        } catch (err) {
             this.systemResponse.failure(req, res, err.message, 500, err);
-        });
+        }
     }
     listUsers = (req: IRequest, res: Response): void => {
         console.log('---------TRAINEE LIST------------');
     }
 
-    updateUser = (req: IRequest, res: Response): void => {
+    updateUser = async (req: IRequest, res: Response): Promise<void> => {
         console.log('----------updateUser-----------');
-        const { id, dataToUpdate} = req.body;
-        const _authId = req.user._authId;
-        const record = {id, dataToUpdate, _authId};
-        this.userRepo.update(record)
-            .then(result => this.systemResponse.success(req, res, `Trainee updated Successfully`, 200, result))
-            .catch(err => this.systemResponse.failure(req, res, err.message, 500, err));
+        try {
+            const { id, dataToUpdate} = req.body;
+            const _authId = req.user._authId;
+            const record = {id, dataToUpdate, _authId};
+            const result = await this.userRepo.update(record);
+            if (result) {
+                this.systemResponse.success(req, res, `Trainee updated Successfully`, 200, result);
+            } else {
+                this.systemResponse.failure(req, res, `can't find record`, 403, result);
+            }
+        } catch (err) {
+            this.systemResponse.failure(req, res, err.message, 500, err);
+        }
     }
 
-    deleteUser = (req: IRequest, res: Response): void => {
+    deleteUser = async (req: IRequest, res: Response): Promise<void> => {
         console.log('---------DELETE TRAINEE------------');
-        const { id } = req.params;
-        const record = {id};
-        this.userRepo.delete(record)
-            .then(user => {
-                if (user) {
-                    this.systemResponse.success(req, res, `Trainee deleted Successfully`, 200, user);
-                } else {
-                    this.systemResponse.failure(req, res, 'No Such userExits', 500, user);
-                }
-            })
-            .catch(err => this.systemResponse.failure(req, res, 'Deletion Failed', 500, err));
+        try {
+            const { id } = req.params;
+            const _authId = req.user._authId;
+            const record = {id, _authId};
+            const result = await this.userRepo.delete(record);
+            if (result) {
+                this.systemResponse.success(req, res, `Trainee deleted Successfully`, 200, result);
+            } else {
+                this.systemResponse.failure(req, res, 'No Such record exits', 500, result);
+            }
+        } catch (err) {
+            this.systemResponse.failure(req, res, 'Unauthorized access', 500, err);
+        }
     }
 
     userProfile = (req: Request, res: Response): void => {
