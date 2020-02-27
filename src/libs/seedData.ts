@@ -5,11 +5,12 @@ export const seedData = () => {
         name : 'suraj',
         email : 'trainee@successive.tech',
         mob : 900290282,
+        role: 'head-trainer',
         dob : new Date(),
         address : 'c-121 ,east delhi',
         hobbies : ['swimming'],
-        createBy : 'Head-Trainer',
-        role: 'head-trainer'
+        createdBy : 'head-trainer',
+        createdAt: new Date()
     };
 
     userRepo.count().then( (count: number) => {

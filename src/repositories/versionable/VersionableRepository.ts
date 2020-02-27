@@ -14,9 +14,8 @@ class VersionableRepository<D extends mongoose.Document, M extends mongoose.Mode
     public create(data): Promise<D> {
         console.log('----------IN VERSIONABLE REPO---------', data);
         const record = {
+            createdBy : data.userId,
             ...data,
-            createdAt : Date.now(),
-            createdBy : data._authId,
             originalId: this.getObjectId()
         };
         return this.modelType.create(record);
@@ -24,13 +23,14 @@ class VersionableRepository<D extends mongoose.Document, M extends mongoose.Mode
 
     public async update(record): Promise<object> {
     console.log('----------IN VERSIONABLE REPO---------', record);
-    const result = await this.delete({id: record.id, _authId: record._authId});
+    const {id, userId} = record;
+    const result = await this.delete({id, userId});
         if (result) {
             const updateRecord = {
                 ...result,
                 ...record.dataToUpdate,
-                updatedAt : Date.now(),
-                updatedBy : record._authId,
+                updatedAt : new Date(),
+                updatedBy : userId,
                 originalId: result['originalId']
                 };
                 delete updateRecord._id;
@@ -42,10 +42,16 @@ class VersionableRepository<D extends mongoose.Document, M extends mongoose.Mode
 
     public async delete(record): Promise<object> {
         console.log('----------IN VERSIONABLE REPO---------', record);
-        const {id, _authId} = record;
+        const {id, userId} = record;
         const query = {originalId : id, deletedBy: undefined};
-        const update = {deletedAt : Date.now(), deletedBy: _authId};
+        const update = {deletedAt : new Date() , deletedBy: userId};
         return await this.modelType.findOneAndUpdate(query, update, {new: false}).lean();
+    }
+
+    public async get(id): Promise<object> {
+        console.log('----------IN  VERSIONABLE REPO-----------');
+        const query = {originalId: id, deletedAt: undefined};
+        return await this.modelType.findOne(query).lean();
     }
 }
 

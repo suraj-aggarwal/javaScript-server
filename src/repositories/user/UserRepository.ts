@@ -20,7 +20,7 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
 
     public delete = (record) => {
         console.log('----------DELETE USER-------------', record);
-        return super.delete({id: record.id, _authId: record._authId});
+        return super.delete(record);
     };
 
     public update = (record) => {
@@ -36,6 +36,10 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
     public profile = (_id: string) => {
         console.log('----------------User Profile Inside Controller--------------');
         return userModel.findOne({ _id });
+    }
+
+    public get = (id) => {
+        return super.get(id);
     }
 }
 

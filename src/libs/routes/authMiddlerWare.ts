@@ -18,7 +18,7 @@ const authMiddlerWare = (module: string, permission: string) => (req: IRequest, 
         }
 
         const {id, email} = decodedPayload;
-        req.user = {_authId: id, email};
+        req.user = {userId: id, email};
         const isUserExists = userRepo.isExists(id, email);
         if (!isUserExists) {
             res.send({
