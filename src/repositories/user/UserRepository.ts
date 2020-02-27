@@ -33,9 +33,9 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
         return userModel.exists(condition);
     }
 
-    public profile = (_id: string) => {
+    public profile = (id: string) => {
         console.log('----------------User Profile Inside Controller--------------');
-        return userModel.findOne({ _id });
+        return userModel.findOne({ originalId: id, deletedAt: undefined });
     }
 
     public get = (id) => {

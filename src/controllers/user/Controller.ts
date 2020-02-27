@@ -44,7 +44,7 @@ class UserController {
     }
   };
   user = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------TRAINEE LIST------------');
+    console.log('---------TRAINEE------------');
     try {
       const { id } = req.params;
       const result = await this.userRepo.get(id);

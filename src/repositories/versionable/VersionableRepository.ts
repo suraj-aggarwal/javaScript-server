@@ -30,8 +30,7 @@ class VersionableRepository<D extends mongoose.Document, M extends mongoose.Mode
                 ...result,
                 ...record.dataToUpdate,
                 updatedAt : new Date(),
-                updatedBy : userId,
-                originalId: result['originalId']
+                updatedBy : userId
                 };
                 delete updateRecord._id;
                 console.log('---------Updated record -----------', updateRecord);
