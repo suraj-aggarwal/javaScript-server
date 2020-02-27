@@ -43,7 +43,7 @@ class UserController {
       this.systemResponse.failure(req, res, err.message, 500, err);
     }
   };
-  user = async (req: IRequest, res: Response): Promise<void> => {
+  get = async (req: IRequest, res: Response): Promise<void> => {
     console.log('---------TRAINEE------------');
     try {
       const { id } = req.params;
