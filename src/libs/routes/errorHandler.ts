@@ -12,12 +12,12 @@ const errorHandler = (errs, req: Request, res: Response, next: NextFunction) => 
                 timeStamp : new Date()
             });
         });
-        res.send(errorlogs);
+        return res.send(errorlogs);
     } else {
         res.send({
             error : errs.message,
             message : 'error',
-            status : 500,
+            status : 404,
             timeStamp : new Date()
         });
     }

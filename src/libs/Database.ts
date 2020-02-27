@@ -9,7 +9,7 @@ class Database {
                 reject('database connnection failed');
             } else {
                 seedData();
-                resolve('connection is successfull');
+                return resolve('connection is successfull');
             }
         });
     });

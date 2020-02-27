@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 interface Iuser {
     traineeName: string;
     reviewerName: string;
@@ -15,13 +17,11 @@ interface Imodule {
 }
 
 interface IUser {
-    _id: string;
-    name: string;
+    userId: string;
     email: string;
-    address: string;
-    mod: number;
-    dob: Date;
-    hobbies: [string];
 }
 
-export { Iuser, Ipermissions, IUser };
+interface IRequest extends Request {
+    user: IUser;
+}
+export { Iuser, Ipermissions, IUser, IRequest  };

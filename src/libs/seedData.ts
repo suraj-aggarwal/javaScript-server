@@ -3,11 +3,14 @@ const userRepo = new UserRepository();
 export const seedData = () => {
     const seedUser = {
         name : 'suraj',
-        email : 'hiiamsurajaggarwal12@gmail.com',
+        email : 'trainee@successive.tech',
         mob : 900290282,
+        role: 'head-trainer',
         dob : new Date(),
         address : 'c-121 ,east delhi',
-        hobbies : ['swimming']
+        hobbies : ['swimming'],
+        createdBy : 'head-trainer',
+        createdAt: new Date()
     };
 
     userRepo.count().then( (count: number) => {
