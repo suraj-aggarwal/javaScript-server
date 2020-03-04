@@ -4,6 +4,7 @@ interface IUserModel extends IVersionableDocument {
     name: string;
     email: string;
     password: string;
+    role: string;
     address: string;
     mob: number;
     dob: Date;

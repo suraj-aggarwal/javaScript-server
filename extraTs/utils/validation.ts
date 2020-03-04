@@ -1,16 +1,12 @@
-const validateEmail = str => {
-    console.log('------validateEmail--------', str);
-    const regex = /^[A-Za-z0-9._%+-]+@successive.tech$/;
-    return regex.test(str);
-};
+import { validateEmail } from './helper';
+import { Iuser } from '../interface';
 
-const validateUsers = (users) => {
-    const validUsers = [];
-    const invalidUsers = [];
-
-    users.forEach(user => {
-        const { traineeName, reveiwerName } = user;
-        if (validateEmail(traineeName) && validateEmail(reveiwerName)) {
+const validateUsers = (users: Iuser[]) => {
+    const validUsers: Iuser[] = [];
+    const invalidUsers: Iuser[] = [];
+    users.forEach((user: Iuser) => {
+        const { reviewerName, traineeName }: Iuser = user;
+        if (validateEmail(traineeName) && validateEmail(reviewerName)) {
             validUsers.push(user);
         } else {
             invalidUsers.push(user);
