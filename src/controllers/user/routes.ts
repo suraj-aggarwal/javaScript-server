@@ -8,7 +8,7 @@ const userRoute = Router();
 console.log('------------TRAINEE ROUTER---------');
 userRoute.get('/me', Controller.userProfile)
     .get('/login', Controller.login)
-    .get('/:id', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.get), Controller.get)
+    .get('/', authMiddlerWare('getUsers', 'read'),Controller.get)
     .post('/', authMiddlerWare('getUsers', 'write'), validateTrainee(validate.create), Controller.create)
     .put('/', authMiddlerWare('getUsers', 'write'),  validateTrainee(validate.update), Controller.update)
     .delete('/:id', authMiddlerWare('getUsers', 'delete'), validateTrainee(validate.delete), Controller.delete);

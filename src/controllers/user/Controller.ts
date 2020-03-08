@@ -33,6 +33,7 @@ class UserController {
       const data = req.body;
       const record = { ...data, userId };
       const result = await this.userRepo.create(record);
+      delete result._id;
       if (result) {
         this.systemResponse.success(
           req,
@@ -51,12 +52,13 @@ class UserController {
   get = async (req: IRequest, res: Response): Promise<void> => {
     console.log('---------TRAINEE------------');
     try {
-      const { id } = req.params;
-      const result = await this.userRepo.get(id);
+      const query = req.query;
+      const result = await this.userRepo.get(query);
+      delete result._id;
       if (result) {
         this.systemResponse.success(req, res, 'Trainee details', 200, result);
       } else {
-        this.systemResponse.failure(req, res, 'Failed to get', 500, result);
+        this.systemResponse.failure(req, res, 'No matching records', 500, result);
       }
     } catch (err) {
       this.systemResponse.failure(req, res, err.message, 500, err);
@@ -70,6 +72,7 @@ class UserController {
       const userId = req.user.userId;
       const record = { id, dataToUpdate, userId };
       const result = await this.userRepo.update(record);
+      delete result['_id'];
       if (result) {
         this.systemResponse.success(
           req,
@@ -93,6 +96,7 @@ class UserController {
       const userId = req.user.userId;
       const record = { id, userId };
       const result = await this.userRepo.delete(record);
+      delete result['_id'];
       if (result) {
         this.systemResponse.success(
           req,
@@ -117,7 +121,7 @@ class UserController {
   login = async (req: IRequest, res: Response): Promise<void> => {
     const email = req.body.email;
     const password = req.body.password;
-    const doc = await this.userRepo.IsEmailExits(email);
+    const doc = await this.userRepo.get(email);
     console.log(doc);
     if (doc !== null) {
       const match = await bcrypt.compare(password, doc.password);
@@ -160,6 +164,7 @@ class UserController {
       });
     return false;
   };
+
 }
 
 export default UserController.getInstance();

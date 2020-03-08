@@ -41,12 +41,8 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
         return userModel.findOne({ originalId: id, deletedAt: undefined });
     }
 
-    public get = (id) => {
-        return super.get(id);
-    }
-
-    public IsEmailExits = (email: string) => {
-        return super.IsEmailExits(email);
+    public get = (query) => {
+        return super.get(query);
     }
 }
 

@@ -18,6 +18,11 @@ const validate = {
             regex: /^trainee|trainer|head-trainer$/,
             in: ['body'],
             errorMessage: 'role is required',
+        },
+        password: {
+            required: true,
+            in: ['body'],
+            errorMessage: 'password is required',
         }
     }, delete: {
         id: {
@@ -54,12 +59,6 @@ const validate = {
             custom: dataToUpdate => {
                 console.log('custom function');
             },
-        }
-    }, get: {
-        id: {
-            required: true,
-            errorMessage: 'Id is required',
-            in: ['params']
         }
     }
 };
