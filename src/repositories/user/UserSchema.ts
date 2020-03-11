@@ -4,6 +4,7 @@ class UserSchema extends VersionableSchema {
         const userSchema = {
             name: String,
             email: String,
+            password: String,
             role: String,
             address: String,
             mod: Number,

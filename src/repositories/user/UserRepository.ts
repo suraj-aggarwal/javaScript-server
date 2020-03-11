@@ -2,6 +2,7 @@ import { userModel } from './UserModel';
 import VersionableRepository from '../versionable/VersionableRepository';
 import IUserModel from './IUserModel';
 import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IUserModel>> {
 
@@ -15,6 +16,8 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
 
     public create = (data): Promise<IUserModel> => {
         console.log('----------IN USERREPOSITORY CREATE METHOD-----------');
+        const hash = bcrypt.hashSync(data.password, 10);
+        data.password = hash;
         return super.create(data);
     }
 
@@ -38,8 +41,8 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
         return userModel.findOne({ originalId: id, deletedAt: undefined });
     }
 
-    public get = (id) => {
-        return super.get(id);
+    public get = (query) => {
+        return super.get(query);
     }
 }
 

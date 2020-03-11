@@ -16,7 +16,6 @@ const authMiddlerWare = (module: string, permission: string) => (req: IRequest, 
         if (!decodedPayload) {
             systemResponse.failure(req, res, `Unauthorized Access`, 401, {error: `Authorization Failed`});
         }
-
         const {id, email} = decodedPayload;
         req.user = {userId: id, email};
         const isUserExists = userRepo.isExists(id, email);
