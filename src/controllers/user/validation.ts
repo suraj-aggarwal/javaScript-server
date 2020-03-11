@@ -1,23 +1,28 @@
 const validate = {
     create:
     {
-        id: {
-            required: false,
-            string: true,
-            in: ['body'],
-            custom: value => {
-                console.log('Value', value);
-                // throw {
-                //     error: 'Error Occured',
-                //     message: 'Message'
-                // };
-            }
-        },
         name: {
             required: true,
             regex: /^[a-zA-Z][a-zA-Z ]+$/,
             in: ['body'],
             errorMessage: 'Name is required',
+        },
+        email: {
+            required: true,
+            regex: /^[A-Za-z0-9._%+-]+@successive.tech$/,
+            in: ['body'],
+            errorMessage: 'email is required',
+        },
+        role: {
+            required: true,
+            regex: /^trainee|trainer|head-trainer$/,
+            in: ['body'],
+            errorMessage: 'role is required',
+        },
+        password: {
+            required: true,
+            in: ['body'],
+            errorMessage: 'password is required',
         }
     }, delete: {
         id: {
@@ -26,7 +31,7 @@ const validate = {
             in: ['params']
         }
     },
-    get: {
+    list: {
         skip: {
             required: false,
             default: 0,

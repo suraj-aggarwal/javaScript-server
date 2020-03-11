@@ -2,6 +2,7 @@ import { userModel } from './UserModel';
 import VersionableRepository from '../versionable/VersionableRepository';
 import IUserModel from './IUserModel';
 import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IUserModel>> {
 
@@ -15,34 +16,33 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
 
     public create = (data): Promise<IUserModel> => {
         console.log('----------IN USERREPOSITORY CREATE METHOD-----------');
+        const hash = bcrypt.hashSync(data.password, 10);
+        data.password = hash;
         return super.create(data);
     }
 
-
-    public delete = (deleteRecord: object) => {
-        console.log('----------DELETE USER-------------', deleteRecord);
-        return super.delete(deleteRecord);
+    public delete = (record) => {
+        console.log('----------DELETE USER-------------', record);
+        return super.delete(record);
     };
 
     public update = (record) => {
-        console.log('----------User REPO --------udpate');
         return super.update(record);
     }
 
-    public isExits = (id: string, email: string) => {
+    public isExists = (id: string, email: string) => {
         console.log('----------isExits-----------', id, email);
-        const _id = id;
         const condition = { _id: id, email };
         return userModel.exists(condition);
     }
 
-    public profile = (_id: string) => {
+    public profile = (id: string) => {
         console.log('----------------User Profile Inside Controller--------------');
-        return userModel.findOne({ _id });
+        return userModel.findOne({ originalId: id, deletedAt: undefined });
     }
 
-    public IsEmailExits = (email: string) => {
-        return super.IsEmailExits(email);
+    public get = (query) => {
+        return super.get(query);
     }
 
     public getAllRecord = (query) => {

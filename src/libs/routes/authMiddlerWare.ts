@@ -1,47 +1,41 @@
-import { Request, Response, NextFunction, response } from 'express';
+import { Response, NextFunction } from 'express';
 import configuration from '../../config/configuration';
 import * as jwt from 'jsonwebtoken';
 import hasPermission from '../utils/permissions';
-import UserRepository from '../../repositories/user/UserRepository';
-import { IRequest } from '../interface';
+import { IRequest } from '../../libs/interface';
+import SystemResponse from './SystemResponse';
+import UserRepositroy from '../../repositories/user/UserRepository';
 
 const authMiddlerWare = (module: string, permission: string) => (req: IRequest, res: Response, next: NextFunction) => {
     console.log('----------------------AUTHMIDDLE WARE------------------');
-    const userRepo = new UserRepository();
     try {
+        const userRepo = new UserRepositroy();
+        const systemResponse: SystemResponse = new SystemResponse();
         const token: string = req.headers.authorization;
-        const decodedPayload = jwt.verify(token, configuration.SECRECT_KEY);
-        const decodedString = JSON.stringify(decodedPayload);
-        const decodedJson = JSON.parse(decodedString);
+        const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
         if (!decodedPayload) {
-            return res.status(500).send('Unatuhorized Acess.');
+            systemResponse.failure(req, res, `Unauthorized Access`, 401, {error: `Authorization Failed`});
         }
-
-        const { id, email} = decodedJson;
-        console.log(decodedJson);
-        const user = {
-            _authId : id,
-            email
-        };
-
-        req.user = user;
-        console.log(req.user);
-
-        if (userRepo.isExits(id, email)) {
-            console.log('user already exits');
-        } else {
-            console.log('user doesnt exits');
-            return res.status(500).send('cant find user.');
+        const {id, email} = decodedPayload;
+        req.user = {userId: id, email};
+        const isUserExists = userRepo.isExists(id, email);
+        if (!isUserExists) {
+            res.send({
+                error: 'User does not exists',
+                Stauts: 403,
+                message: 'forbidden'
+            });
         }
-
-        if (!hasPermission(module, permission, decodedJson.role)) {
-            return res.status(500).send('Permission Denied.');
+        if (!hasPermission(module, permission, decodedPayload.role)) {
+            systemResponse.failure(req, res, `Permission Denied`, 403, {error: `Permission Denied`});
         }
         console.log('----------------AUTHENTIC AND ATHORIZED------------');
-         return next();
+        next();
     } catch (err) {
         throw err;
     }
 };
+
+
 
 export default authMiddlerWare;
