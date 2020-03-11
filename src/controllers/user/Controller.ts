@@ -121,8 +121,7 @@ class UserController {
   login = async (req: IRequest, res: Response): Promise<void> => {
     const email = req.body.email;
     const password = req.body.password;
-    const doc = await this.userRepo.get(email);
-    console.log(doc);
+    const doc = await this.userRepo.get({email});
     if (doc !== null) {
       const match = await bcrypt.compare(password, doc.password);
       console.log('--------Match-------', match);
