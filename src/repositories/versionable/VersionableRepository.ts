@@ -52,7 +52,7 @@ class VersionableRepository<
         console.log('---------------getAllRecords-------------', filter);
         const logSkip = Number(filter.skip);
         const logLimit = Number(filter.limit);
-        const result =  await this.modelType.find(filter.query).sort(filter.option).limit(logLimit).skip(logSkip);
+        const result =  await this.modelType.find(filter.query).sort(filter.option === '' ? 'createdAt' : filter.option).limit(logLimit).skip(logSkip);
         console.log(result);
         return result;
     }

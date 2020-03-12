@@ -6,10 +6,10 @@ import authMiddlerWare from '../../libs/routes/authMiddlerWare';
 
 const traineeRoute = Router();
 console.log('------------TRAINEE ROUTER---------');
-traineeRoute.get('/', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.get), Controller.listTrainee)
-    .post('/', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.create), Controller.addTrainee)
-    .put('/', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.update), Controller.updateTrainee)
-    .delete('/:id', authMiddlerWare('getUsers', 'delete'), validateTrainee(validate.delete), Controller.deleteTrainee)
-    .get('/search', Controller.search);
+traineeRoute.get('/all', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.list), Controller.list)
+    .post('/', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.create), Controller.create)
+    .put('/', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.update), Controller.update)
+    .delete('/:id', authMiddlerWare('getUsers', 'delete'), validateTrainee(validate.delete), Controller.delete)
+    .get('/', authMiddlerWare('getUsers', 'read'), Controller.search);
 
 export default traineeRoute;
