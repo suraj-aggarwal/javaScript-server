@@ -7,7 +7,7 @@ console.log('------------TRAINEE ROUTER---------');
 /**
  * @swagger
  * /user/login:
- *    post:
+ *    get:
  *      tags:
  *        - Users
  *      name: Login
