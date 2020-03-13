@@ -17,7 +17,7 @@ interface Imodule {
 }
 
 interface IUser {
-    _authId: string;
+    userId: string;
     email: string;
 }
 

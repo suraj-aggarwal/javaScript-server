@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import configuration from '../../config/configuration';
 import * as jwt from 'jsonwebtoken';
 import hasPermission from '../utils/permissions';
-import UserRepository from '../../repositories/user/UserRepository';
-import { IRequest } from '../interface';
+import { IRequest } from '../../libs/interface';
+import SystemResponse from './SystemResponse';
+import UserRepositroy from '../../repositories/user/UserRepository';
 
 const authMiddlerWare = (module: string, permission: string) => (
   req: IRequest,
@@ -12,38 +13,37 @@ const authMiddlerWare = (module: string, permission: string) => (
 ) => {
   console.log('----------------------AUTHMIDDLE WARE------------------');
   try {
-    const userRepo: UserRepository = new UserRepository();
+    const userRepo = new UserRepositroy();
+    const systemResponse: SystemResponse = new SystemResponse();
     const token: string = req.headers.authorization;
     const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
     if (!decodedPayload) {
-      res.send({
-        error: 'Unauthorized Access.',
-        Stauts: 401,
-        message: 'Unauthorized Access.'
+      systemResponse.failure(req, res, `Unauthorized Access`, 401, {
+        error: `Authorization Failed`
       });
     }
-
     const { id, email } = decodedPayload;
+    req.user = { userId: id, email };
     const isUserExists = userRepo.isExists(id, email);
     if (!isUserExists) {
-      res.send({
-        error: 'User does not exists',
-        Stauts: 403,
-        message: 'forbidden'
-      });
+        res.send({
+        message: 'User does not exists',
+        status: 403,
+        error: 'forbidden'}
+      );
     }
     if (!hasPermission(module, permission, decodedPayload.role)) {
-      res.send({
-        error: 'Permission Denied.',
-        Stauts: 403,
-        message: 'Permission Denied.'
+        res.send({
+          message: `Permission Denied`,
+          status: 403,
+          error: `Permission Denied`
       });
     }
-
     console.log('----------------AUTHENTIC AND ATHORIZED------------');
     next();
   } catch (err) {
     throw err;
   }
 };
+
 export default authMiddlerWare;

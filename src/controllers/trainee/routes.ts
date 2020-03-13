@@ -6,28 +6,43 @@ import authMiddlerWare from '../../libs/routes/authMiddlerWare';
 
 const traineeRoute = Router();
 console.log('------------TRAINEE ROUTER---------');
-
 /**
  * @swagger
- * /trainee:
+ * /trainee/all:
  *    get:
+ *      tags:
+ *      - Trainee
  *      security:
- *        -Bearer: []
+ *        - bearerAuth: []
  *      tag:
  *        -trainnee
  *      description: Return the list of trainees
+ *      consumes:
+ *        - applicaiton/json
  *      produces:
- *        -application/json
+ *        - application/json
+ *      parameters:
+ *         - name: skip
+ *           in: field
+ *         - name: limit
+ *           in: field
+ *         - name: sort
+ *           in: field
+ *         - name: name
+ *           in: field
+ *           schema:
+ *              type: string
  *      responses:
  *        '200':
  *          description: OK
  *          schema:
  *            $ref: '#/definitions/trainee'
- *        '403':
+ *        '404':
  *          description: not found
  * definitions:
  *      trainee:
  *        properties:
+ *          count: 1
  *          name:
  *            type: string
  *            example: suraj aggarwal
@@ -37,24 +52,38 @@ console.log('------------TRAINEE ROUTER---------');
  *          dob:
  *            type: date
  *            example: 12/09/1998
+ *          role:
+ *            type: string
+ *            example: trainee
+ *          mod:
+ *            type: integer
+ *            example: 9910236789
+ *          hobbies:
+ *            type: array
+ *            example: ['music','football']
+ *          createdAt:
+ *            type: Date
+ *            example: 2020-03-13T11:16:37.362Z
+ *          createdBy:
+ *            type: string
+ *            example: 5e6b6b95ae038067d9456797
  */
 traineeRoute
-  .get(
-    '/',
-    authMiddlerWare('getUsers', 'read'),
-    validateTrainee(validate.get),
-    Controller.listTrainee
-  )
+.get('/all', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.list), Controller.list)
 
 /**
  * @swagger
  * /trainee:
  *    post:
+ *      tags:
+ *      - Trainee
  *      security:
- *        - Bearer: []
+ *        - bearerAuth: []
  *      tag:
  *        - trainnee
  *      description: create a trainee
+ *      consumes:
+ *        - application/json
  *      produces:
  *        - application/json
  *      parameters:
@@ -85,18 +114,15 @@ traineeRoute
  *              example:
  *                $ref: '#/definitions/trainee'
  */
-  .post(
-    '/',
-    authMiddlerWare('getUsers', 'read'),
-    validateTrainee(validate.create),
-    Controller.addTrainee
-  )
+    .post('/', authMiddlerWare('getUsers', 'write'), validateTrainee(validate.create), Controller.create)
 /**
  * @swagger
  * /trainee:
  *    put:
+ *      tags:
+ *      - Trainee
  *      security:
- *        - Bearer: []
+ *        - bearerAuth: []
  *      tag:
  *        - trainnee
  *      description: create a trainee
@@ -105,9 +131,12 @@ traineeRoute
  *      parameters:
  *        - name: Request Body
  *          desciption: data to update a trianee
- *          in: body`
+ *          in: body
  *          required: true
- *        - name: skip
+ *        - name: id
+ *          in: field
+ *          required: true
+ *        - name: dataToUpdate
  *          in: field
  *          required: true
  *      responses:
@@ -128,27 +157,24 @@ traineeRoute
  *                  type: object
  *                  example: {"name": Ayushi}
  */
-  .put(
-    '/',
-    authMiddlerWare('getUsers', 'read'),
-    validateTrainee(validate.update),
-    Controller.updateTrainee
-  )
+    .put('/', authMiddlerWare('getUsers', 'update'), validateTrainee(validate.update), Controller.update)
 /**
  * @swagger
  * /trainee/{id}:
  *    delete:
+ *      tags:
+ *      - Trainee
  *      security:
- *        -Bearer: []
+ *        - bearerAuth: []
  *      tag:
  *        -trainnee
  *      description: create a trainee
  *      produces:
  *        -application/json
  *      parameters:
- *          -name: id
+ *        - name: id
  *          desciption: delete a specific trainee
- *          in: path
+ *          in: params
  *          required: true
  *      responses:
  *        '200':
@@ -170,10 +196,6 @@ traineeRoute
  *              type: string
  *              example: "5e54c7b966a40353e120bc2a"
  */
-  .delete(
-    '/:id',
-    authMiddlerWare('getUsers', 'read'),
-    validateTrainee(validate.delete),
-    Controller.deleteTrainee
-  );
+    .delete('/:id', authMiddlerWare('getUsers', 'delete'), validateTrainee(validate.delete), Controller.delete)
+    .get('/search', authMiddlerWare('getUsers', 'read'), Controller.search);
 export default traineeRoute;

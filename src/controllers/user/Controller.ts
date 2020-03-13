@@ -1,14 +1,15 @@
-import { Response, request } from 'express';
-import UserRepository from '../../repositories/user/UserRepository';
-import { IRequest } from '../../libs/interface';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import config from '../../config/configuration';
+import { Request, Response } from 'express';
+import UserRepository from '../../repositories/user/UserRepository';
+import { IRequest } from '../../libs/interface';
 import SystemResponse from '../../libs/routes/SystemResponse';
+import configuration from '../../config/configuration';
 
 class UserController {
   static instance: UserController;
-  private systemResponse = new SystemResponse();
+  private systemResponse: SystemResponse = new SystemResponse();
   static getInstance(): UserController {
     if (UserController.instance instanceof UserController) {
       return UserController.instance;
@@ -19,135 +20,51 @@ class UserController {
 
   private userRepo = new UserRepository();
 
-  addUser = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------ADD USER------------');
-    try {
-      const body = req.body;
-      const data = {
-        ...body,
-        _authId: req.user._authId
-      };
-      const hash = bcrypt.hashSync(data.password, 10);
-      data.password = hash;
-      console.log('------compelete data -----------', data);
-      const result = await this.userRepo.create(data);
-      if (result !== null) {
-        return this.systemResponse.success(
-          req,
-          res,
-          'user added successfully',
-          200,
-          result
-        );
-      } else {
-        return this.systemResponse.success(
-          req,
-          res,
-          'user add failed',
-          500,
-          result
-        );
-      }
-    } catch (error) {
-      return this.systemResponse.failure(
-        req,
-        res,
-        `can't add user`,
-        500,
-        error
-      );
-    }
-  };
-  listUsers = (req: IRequest, res: Response): void => {
-    console.log('---------TRAINEE LIST------------');
-  };
-
-  updateUser = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('----------updateUser-----------');
-    console.log('------------ID------------', req.body.id);
-    console.log('---------REQUEST UDATE------', req.body.dataToUpdate);
-    try {
-      const record = {
-        originalId: req.body.id,
-        dataToUpdate: req.body.dataToUpdate,
-        _authId: req.user._authId
-      };
-      const result = await this.userRepo.update(record);
-      if (result !== null) {
-        return this.systemResponse.success(
-          req,
-          res,
-          'user updated successfully',
-          200,
-          result
-        );
-      }
-      return this.systemResponse.failure(
-        req,
-        res,
-        `fields are not correct.`,
-        500,
-        result
-      );
-    } catch (error) {
-      return this.systemResponse.failure(req, res, 'Invalid id', 500, error);
-    }
-  };
-
-  deleteUser = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------DELETE TRAINEE------------');
-    try {
-      const deleteRecord = {
-        _authId: req.user._authId,
-        recordId: req.params.id
-      };
-      const result = await this.userRepo.delete(deleteRecord);
-      if (result !== null) {
-        return this.systemResponse.success(
-          req,
-          res,
-          `user deleted successfully`,
-          200,
-          result
-        );
-      }
-    } catch (error) {
-      this.systemResponse.failure(req, res, `can't delete user`, 500, error);
-    }
-  };
-
-  userProfile = (req: IRequest, res: Response): void => {
-    this.userRepo
-      .profile(req.body.id)
-      .then(profile => {
-        if (!profile) {
-          console.log('--------user Profile----------', profile);
-          res.send(profile);
-        }
-        res.send(`Document Does not exits.`);
-      })
-      .catch(err => {
-        res.send(err);
-        console.log();
-      });
-  };
-
   login = async (req: IRequest, res: Response): Promise<void> => {
     const email = req.body.email;
     const password = req.body.password;
-    const doc = await this.userRepo.IsEmailExits(email);
-    console.log(doc);
+    const doc = await this.userRepo.get({ email });
+    const { role } = doc;
     if (doc !== null) {
       const match = await bcrypt.compare(password, doc.password);
-      console.log('--------Match-------', match);
+      console.log('--------Match-------', password, doc.password, match);
       if (!match) {
-        res.send(`Invalid password.`);
+        this.systemResponse.failure(req, res, `Invalid password`, 400, {message: 'entered wrong pasword'});
       }
-      const token = jwt.sign({ email, password }, config.SECRET_KEY);
-      res.send(token);
+      const id = doc.originalId;
+      const token = jwt.sign({ id, email, role }, config.SECRET_KEY);
+      this.systemResponse.success(req, res, `User Profile`, 200, {token});
     } else {
-      res.send(`Invalid email`);
+      this.systemResponse.success(req, res, `Invalid User`, 500, {message: 'falied to login'});
     }
+  };
+  userProfile = (req: Request, res: Response): void => {
+    const token: string = req.headers.authorization;
+    const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
+    const { id } = decodedPayload;
+    console.log(decodedPayload);
+    this.userRepo
+      .profile(id)
+      .then(profile => {
+        console.log('--------user Profile----------', profile);
+        this.systemResponse.success(req, res, `User Profile`, 200, profile);
+      })
+      .catch(err => {
+        this.systemResponse.failure(req, res, 'No Such userExits', 500, err);
+      });
+  };
+
+  isExists = (id: string, email: string): boolean => {
+    this.userRepo
+      .isExists(id, email)
+      .then(permission => {
+        console.log('-----------------permissions-----------', permission);
+        return permission;
+      })
+      .catch(err => {
+        return false;
+      });
+    return false;
   };
 }
 

@@ -1,84 +1,139 @@
 import { Request, Response } from 'express';
 import UserRepository from '../../repositories/user/UserRepository';
+import SystemResponse from '../../libs/routes/SystemResponse';
+import { IRequest } from '../../libs/interface';
 
 class TraineeController {
-  static instance: TraineeController;
-  public userRepo = new UserRepository();
-  static getInstance(): TraineeController {
-    if (TraineeController.instance instanceof TraineeController) {
-      return TraineeController.instance;
+    static instance: TraineeController;
+    public userRepo = new UserRepository();
+    private systemResponse: SystemResponse = new SystemResponse();
+    static getInstance(): TraineeController {
+        if (TraineeController.instance instanceof TraineeController) {
+            return TraineeController.instance;
+        }
+        return TraineeController.instance = new TraineeController();
     }
-    return (TraineeController.instance = new TraineeController());
-  }
-  private constructor() {}
+    private constructor() { }
 
-  addTrainee = (req: Request, res: Response): void => {
-    console.log('---------ADD TRAINEE------------');
-    res.send({
-      id: '1',
-      traineeName: 'Suraj Aggarwal',
-      traineeEmail: 'suraj@gmail.com',
-      department: 'IT'
-    });
-  };
+    public count = () => {
+        this.userRepo.count();
+      };
 
-  listTrainee = async (req: Request, res: Response) => {
-    console.log('---------TRAINEE LIST------------');
-    const query: object = { role: 'trainee', deletedBy: undefined };
-    const option: string = 'createdAt';
-    const filter: object = {
-      query,
-      skip: req.query.skip,
-      limit: req.query.limit,
-      option
-    };
-    const result = await this.userRepo.getAllRecord(filter);
-    const count = result.length;
-    console.log('------COUNT-------', count);
-    const resultSet = { count, result };
-    if (result !== null) {
-      res.send(resultSet);
-    } else {
-      res.send(resultSet);
+      create = async (req: IRequest, res: Response): Promise<void> => {
+        console.log('---------ADD USER------------');
+        try {
+          const userId = req.user.userId;
+          const data = req.body;
+          const record = { ...data, userId };
+          const result = await this.userRepo.create(record);
+          if (result) {
+            delete result._id;
+            this.systemResponse.success(
+              req,
+              res,
+              `Trainee added Successfully`,
+              200,
+              result
+            );
+          } else {
+            this.systemResponse.success(req, res, `Unauthorized User`, 403, result);
+          }
+        } catch (err) {
+          this.systemResponse.failure(req, res, err.message, 500, err);
+        }
+      };
+
+    list = async (req: Request, res: Response) => {
+        console.log('---------TRAINEE LIST------------');
+        const query: object = {role: 'trainee', deletedBy: undefined};
+        const option: string = req.body.option;
+        const filter: object = {query, skip: req.query.skip, limit: req.query.limit, option};
+        const result = await this.userRepo.getAllRecord(filter);
+        const count = result.length;
+        console.log('------COUNT-------', count);
+        const resultSet = {count, result};
+        if (result !== null) {
+          this.systemResponse.success(req, res, `list of trainees`, 200, result);
+        } else {
+          this.systemResponse.failure(req, res, 'falied to get list', 500, result);
+        }
     }
-  };
 
-  updateTrainee = (req: Request, res: Response): void => {
-    console.log('---------UPDATE TRAINEE------------');
-    const trainee = {
-      id: '2',
-      traineeName: 'Suraj Aggarwal',
-      traineeEmail: 'suraj@gmail.com',
-      department: 'IT'
-    };
-    res.send(trainee);
-  };
+    update = async (req: IRequest, res: Response): Promise<void> => {
+        console.log('----------updateUser-----------');
+        try {
+          const { id, dataToUpdate } = req.body;
+          const userId = req.user.userId;
+          const record = { id, dataToUpdate, userId };
+          const result = await this.userRepo.update(record);
+          if (result) {
+            delete result['_id'];
+            this.systemResponse.success(
+              req,
+              res,
+              `Trainee updated Successfully`,
+              200,
+              result
+            );
+          } else {
+            this.systemResponse.failure(req, res, `can't find record`, 403, result);
+          }
+        } catch (err) {
+          this.systemResponse.failure(req, res, err.message, 500, err);
+        }
+      };
 
-  deleteTrainee = (req: Request, res: Response) => {
-    console.log('---------DELETE TRAINEE------------');
-    const trainee = {
-      id: '2',
-      traineeName: 'Suraj Aggarwal',
-      traineeEmail: 'suraj@gmail.com',
-      department: 'IT'
-    };
-    res.send(trainee);
-  };
+      delete = async (req: IRequest, res: Response): Promise<void> => {
+        console.log('---------DELETE TRAINEE------------');
+        try {
+          const { id } = req.params;
+          const userId = req.user.userId;
+          const record = { id, userId };
+          const result = await this.userRepo.delete(record);
+          if (result) {
+            delete result['_id'];
+            this.systemResponse.success(
+              req,
+              res,
+              `Trainee deleted Successfully`,
+              200,
+              result
+            );
+          } else {
+            this.systemResponse.failure(
+              req,
+              res,
+              'No Such record exits',
+              500,
+              result
+            );
+          }
+        } catch (err) {
+          this.systemResponse.failure(req, res, 'Unauthorized access', 500, err);
+        }
+      };
 
-  search = (req: Request, res: Response): void => {
-    console.log('-----------search-----------');
-    try {
-      console.log(req.query);
-      const result = this.userRepo.search(req.query);
-      if (result) {
-        res.send(result);
-      } else {
-        res.send(result);
-      }
-    } catch (err) {
-      res.send(err);
+    search = async (req: Request, res: Response): Promise<void> => {
+        console.log('---------TRAINEE------------');
+        try {
+          const query = req.query;
+          const result = await this.userRepo.get(query);
+          if (result) {
+            delete result._id;
+            this.systemResponse.success(req, res, 'Trainee details', 200, result);
+          } else {
+            this.systemResponse.failure(
+              req,
+              res,
+              'No matching records',
+              500,
+              result
+            );
+          }
+        } catch (err) {
+          this.systemResponse.failure(req, res, err.message, 500, err);
+        }
     }
-  };
 }
 
 export default TraineeController.getInstance();
