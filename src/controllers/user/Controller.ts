@@ -21,21 +21,28 @@ class UserController {
   private userRepo = new UserRepository();
 
   login = async (req: IRequest, res: Response): Promise<void> => {
-    const email = req.body.email;
-    const password = req.body.password;
-    const doc = await this.userRepo.get({email});
-    if (doc !== null) {
-      const match = await bcrypt.compare(password, doc.password);
-      console.log('--------Match-------', match);
-      if (!match) {
-        res.send(`Invalid password.`);
+    try{
+      const email = req.body.email;
+      const password = req.body.password;
+      const doc = await this.userRepo.get({email});
+      if (doc !== null) {
+        const match = await bcrypt.compare(password, doc.password);
+        console.log('--------Match-------', match);
+        if (!match) {
+          this.systemResponse.failure(res,'Invalid Password',500, {message:'Enter correct password'});
+          res.send(`Invalid password.`);
+        }
+        const id = doc.originalId;
+        const role = doc.role;
+        const token = jwt.sign({ id, email, role }, config.SECRET_KEY);
+        this.systemResponse.success(res,'Authorized User',200, {message: 'ok', tokenString: token});
+      } else {
+        this.systemResponse.failure(res,`Invalid email`,403, {message: 'make sure to add @successive.tech'});
       }
-      const id = doc.originalId;
-      const token = jwt.sign({ id, email }, config.SECRET_KEY);
-      res.send(token);
-    } else {
-      res.send(`Invalid email`);
+    } catch(err) {
+      this.systemResponse.failure(res,'failed to login in',500,{message: 'Server error'});
     }
+ 
   };
   
   userProfile = (req: Request, res: Response): void => {
@@ -47,10 +54,10 @@ class UserController {
       .profile(id)
       .then(profile => {
         console.log('--------user Profile----------', profile);
-        this.systemResponse.success(req, res, `User Profile`, 200, profile);
+        this.systemResponse.success(res, `User Profile`, 200, profile);
       })
       .catch(err => {
-        this.systemResponse.failure(req, res, 'No Such userExits', 500, err);
+        this.systemResponse.failure(res, 'No Such userExits', 500, err);
       });
   };
 

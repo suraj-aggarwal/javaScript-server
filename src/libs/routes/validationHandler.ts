@@ -32,6 +32,9 @@ const validateTrainee = config => {
                         } else if (isObject && type !== 'object') {
                             errorLogs.push(`${parameter} object type is Required`);
                         }
+                        if (isNumber && !isNaN(Number(value))) {
+                            req[input][parameter] = Number(value);
+                        }
                     }
                     if (isFieldExits && custom) { // check custom case if exits
                         try {

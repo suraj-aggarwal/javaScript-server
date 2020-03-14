@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 class SystemResponse {
-    public success(req: Request, res: Response, message: string, code: number, resultSet: object) {
+    public success(res: Response, message: string, code: number, resultSet: object) {
         res.send({
             code,
             message,
@@ -9,7 +9,7 @@ class SystemResponse {
         });
     }
 
-    public failure(req: Request, res: Response, message: string, code: number, resultSet: object) {
+    public failure(res: Response, message: string, code: number, resultSet: object) {
         res.send({
             code,
             error: resultSet,
