@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { request } from 'express';
 
 class VersionableRepository<
   D extends mongoose.Document,
@@ -15,9 +16,12 @@ class VersionableRepository<
 
   public create(data): Promise<D> {
     console.log('----------IN VERSIONABLE REPO---------', data);
-    data.createdBy = data.userId;
-    data.originalId = this.getObjectId();
-    return this.modelType.create(data);
+    const record = {
+      ...data,
+      createdBy: data.userId,
+      originalId: this.getObjectId()
+    }
+    return this.modelType.create(record);
   }
 
   public async update(record): Promise<object> {
@@ -47,15 +51,35 @@ class VersionableRepository<
     }
     return await this.modelType.findOne(query, options).lean();
   }
-  public async delete(record): Promise<object> {
-    console.log('----------IN VERSIONABLE REPO---------', record);
-    const { id, userId } = record;
-    const query = { originalId: id, deletedBy: undefined };
-    const update = { deletedAt: new Date(), deletedBy: userId };
-    return await this.modelType
-      .findOneAndUpdate(query, update, { new: false })
-      .lean();
+    public async getAllRecord(filter): Promise<D[]> {
+        console.log('---------------getAllRecords-------------', filter);
+        const logSkip = Number(filter.skip);
+        const logLimit = Number(filter.limit);
+        const result =  await this.modelType.find(filter.query).sort(filter.option === '' ? 'createdAt' : filter.option).limit(logLimit).skip(logSkip);
+        console.log(result);
+        return result;
+    }
+
+    public async search(query): Promise<D> {
+        console.log('-----------search-----------');
+        const result = await this.modelType.findOne(query);
+        if (result) {
+            console.log('--------Inside If-------');
+            return result.toJSON();
+        }
+        console.log('--------Outside If------------');
+        return result;
+    }
+
+    public async delete(record): Promise<object> {
+      console.log('----------IN VERSIONABLE REPO---------', record);
+      const { id, userId } = record;
+      const query = { originalId: id, deletedBy: undefined };
+      const update = { deletedAt: new Date(), deletedBy: userId };
+      return await this.modelType
+        .findOneAndUpdate(query, update, { new: false })
+        .lean();
+    }
   }
-}
 
 export default VersionableRepository;

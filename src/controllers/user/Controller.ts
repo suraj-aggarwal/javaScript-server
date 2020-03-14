@@ -7,7 +7,6 @@ import { IRequest } from '../../libs/interface';
 import SystemResponse from '../../libs/routes/SystemResponse';
 import configuration from '../../config/configuration';
 
-
 class UserController {
   static instance: UserController;
   private systemResponse: SystemResponse = new SystemResponse();
@@ -21,103 +20,6 @@ class UserController {
 
   private userRepo = new UserRepository();
 
-  public count = () => {
-    this.userRepo.count();
-  };
-
-  create = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------ADD USER------------');
-
-    try {
-      const userId = req.user.userId;
-      const data = req.body;
-      const record = { ...data, userId };
-      const result = await this.userRepo.create(record);
-      delete result._id;
-      if (result) {
-        this.systemResponse.success(
-          req,
-          res,
-          `Trainee added Successfully`,
-          200,
-          result
-        );
-      } else {
-        this.systemResponse.success(req, res, `Unauthorized User`, 403, result);
-      }
-    } catch (err) {
-      this.systemResponse.failure(req, res, err.message, 500, err);
-    }
-  };
-  get = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------TRAINEE------------');
-    try {
-      const query = req.query;
-      const result = await this.userRepo.get(query);
-      delete result._id;
-      if (result) {
-        this.systemResponse.success(req, res, 'Trainee details', 200, result);
-      } else {
-        this.systemResponse.failure(req, res, 'No matching records', 500, result);
-      }
-    } catch (err) {
-      this.systemResponse.failure(req, res, err.message, 500, err);
-    }
-  };
-
-  update = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('----------updateUser-----------');
-    try {
-      const { id, dataToUpdate } = req.body;
-      const userId = req.user.userId;
-      const record = { id, dataToUpdate, userId };
-      const result = await this.userRepo.update(record);
-      delete result['_id'];
-      if (result) {
-        this.systemResponse.success(
-          req,
-          res,
-          `Trainee updated Successfully`,
-          200,
-          result
-        );
-      } else {
-        this.systemResponse.failure(req, res, `can't find record`, 403, result);
-      }
-    } catch (err) {
-      this.systemResponse.failure(req, res, err.message, 500, err);
-    }
-  };
-
-  delete = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------DELETE TRAINEE------------');
-    try {
-      const { id } = req.params;
-      const userId = req.user.userId;
-      const record = { id, userId };
-      const result = await this.userRepo.delete(record);
-      delete result['_id'];
-      if (result) {
-        this.systemResponse.success(
-          req,
-          res,
-          `Trainee deleted Successfully`,
-          200,
-          result
-        );
-      } else {
-        this.systemResponse.failure(
-          req,
-          res,
-          'No Such record exits',
-          500,
-          result
-        );
-      }
-    } catch (err) {
-      this.systemResponse.failure(req, res, 'Unauthorized access', 500, err);
-    }
-  };
   login = async (req: IRequest, res: Response): Promise<void> => {
     const email = req.body.email;
     const password = req.body.password;
@@ -129,16 +31,17 @@ class UserController {
         res.send(`Invalid password.`);
       }
       const id = doc.originalId;
-      const token = jwt.sign({id, email}, config.SECRET_KEY);
+      const token = jwt.sign({ id, email }, config.SECRET_KEY);
       res.send(token);
     } else {
       res.send(`Invalid email`);
     }
   };
+  
   userProfile = (req: Request, res: Response): void => {
     const token: string = req.headers.authorization;
     const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
-    const {id} = decodedPayload;
+    const { id } = decodedPayload;
     console.log(decodedPayload);
     this.userRepo
       .profile(id)
@@ -163,7 +66,6 @@ class UserController {
       });
     return false;
   };
-
 }
 
 export default UserController.getInstance();

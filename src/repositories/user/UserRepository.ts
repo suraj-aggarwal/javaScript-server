@@ -44,6 +44,14 @@ class UserRepository extends VersionableRepository<IUserModel, mongoose.Model<IU
     public get = (query) => {
         return super.get(query);
     }
+
+    public getAllRecord = (query) => {
+        return super.getAllRecord(query);
+    }
+
+    public search = (query) => {
+        return super.search(query);
+    }
 }
 
 export default UserRepository;
