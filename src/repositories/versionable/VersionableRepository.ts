@@ -34,8 +34,8 @@ class VersionableRepository<
         ...record.dataToUpdate,
         updatedAt: new Date(),
         updatedBy: userId
-      };
-      delete updateRecord._id;
+      }
+      delete  updateRecord._id;
       console.log('---------Updated record -----------', updateRecord);
       return this.modelType.create(updateRecord);
     }
@@ -54,23 +54,14 @@ class VersionableRepository<
 
   public async getAllRecord(query: any = {}, options: any = {}): Promise<D[]> {
     console.log('---------------getAllRecords-------------', query, options);
-    const { skip, limit, sort } = options;
+    if(!options.sort || options.sort==='') {
+      options.sort = 'createdAt'
+    }
     const result = await this.modelType.find(
       { ...query, deletedBy: undefined },
       {},
       options
     );
-    return result;
-  }
-
-  public async search(query): Promise<D> {
-    console.log('-----------search-----------');
-    const result = await this.modelType.findOne(query);
-    if (result) {
-      console.log('--------Inside If-------');
-      return result.toJSON();
-    }
-    console.log('--------Outside If------------');
     return result;
   }
 
@@ -82,6 +73,17 @@ class VersionableRepository<
     return await this.modelType
       .findOneAndUpdate(query, update, { new: false })
       .lean();
+  }
+
+  public async search(name: string, email: string): Promise<object>{
+    console.log('-------- Search -------------',name, email );
+    email.toLowerCase();
+    const  nameRegex = new RegExp("^" + name);
+    const  emailRegex = new RegExp("^" + email);
+    const query = [
+        { name: {"$regex": nameRegex} } , {email: {"$regex": emailRegex, "$options": "i"}}
+    ]
+    return await this.modelType.find().or(query)
   }
 }
 

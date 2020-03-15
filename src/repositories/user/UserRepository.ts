@@ -33,7 +33,7 @@ class UserRepository extends VersionableRepository<
 
   public isExists = (id: string, email: string) => {
     console.log('----------isExits-----------', id, email);
-    const condition = { _id: id, email };
+    const condition = { originalId: id, email };
     return userModel.exists(condition);
   };
 
@@ -50,9 +50,10 @@ class UserRepository extends VersionableRepository<
     return super.getAllRecord(query, options);
   };
 
-  public search = query => {
-    return super.search(query);
-  };
+  public search = (name:string, email:string) => {
+    return super.search(name, email);
+  }
+
 }
 
 export default UserRepository;

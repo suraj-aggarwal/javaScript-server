@@ -53,6 +53,7 @@ class UserController {
     this.userRepo
       .profile(id)
       .then(profile => {
+        delete profile._id
         console.log('--------user Profile----------', profile);
         this.systemResponse.success(res, `User Profile`, 200, profile);
       })
@@ -73,6 +74,7 @@ class UserController {
       });
     return false;
   };
+  
 }
 
 export default UserController.getInstance();

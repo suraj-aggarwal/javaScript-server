@@ -1,4 +1,5 @@
 import { Ipermissions, Iuser } from './interface';
+import * as swaggerJSDoc from 'swagger-jsdoc';
 
 const permissions: Ipermissions = {
     getUsers : {
@@ -20,4 +21,29 @@ const users: Iuser[] = [
     }
 ];
 
-export { permissions, users };
+const swaggerDefinition = {
+    info: {
+      title: 'Example trainee API with swagger', // Title (required)
+      version: '1.0.0', // Version (required)
+      description: 'Endpoints to test routes in api' // description(required)
+    },
+    host: 'localhost:9000',
+    basePath: '/api',
+    securityDefinitions: {
+      bearerAuth: {
+        type: 'apiKey',
+        name: 'Authorization',
+        scheme: 'bearer',
+        in: 'Headers'
+      },
+    },  // Path to the API docs
+  };
+
+  const options = {
+    swaggerDefinition,
+    apis: ['dist/controllers/**/routes.js', 'dist/repositories/user/UserSchema.js'],
+  };
+
+  const swaggerSpecs = swaggerJSDoc(options);
+
+export { permissions, users, swaggerSpecs };

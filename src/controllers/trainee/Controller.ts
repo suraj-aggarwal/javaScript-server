@@ -106,25 +106,18 @@ class TraineeController {
   };
 
   search = async (req: Request, res: Response): Promise<void> => {
-    console.log('---------TRAINEE------------');
     try {
-      const query = req.query;
-      const result = await this.userRepo.get(query);
-      if (result) {
-        delete result._id;
-        this.systemResponse.success(res, 'Trainee details', 200, result);
-      } else {
-        this.systemResponse.failure(
-          res,
-          'No matching records',
-          500,
-          result
-        );
+      const {name , email} = req.query;
+      const result = await this.userRepo.search(!name ?  ' ' : name, !email? ' ' : email)
+      if(result) {
+        this.systemResponse.success(res,'fetched all possible records',200, result);
+      }else{
+        this.systemResponse.failure(res,`please enter valid fileds`, 500, result);
       }
-    } catch (err) {
-      this.systemResponse.failure(res, err.message, 500, err);
+    } catch(err) {
+      this.systemResponse.failure(res,`can not fetch record`, 500, err);
     }
-  };
+  }
 }
 
 export default TraineeController.getInstance();

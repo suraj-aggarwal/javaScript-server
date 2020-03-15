@@ -1,11 +1,11 @@
-const equilateral = (rows) => {
-    let str = '';
-    for (let itr = 1; itr <= rows; itr++) {
-        for (let space = rows - itr; space > 0; space--) {
+const equilateral = (rows: number) => {
+    let str: string = '';
+    for (let itr: number = 1; itr <= rows; itr++) {
+        for (let space: number = rows - itr; space > 0; space--) {
             str = str + ' ';
         }
 
-        for (let star = 1; star <= itr; star++) {
+        for (let star: number = 1; star <= itr; star++) {
             str = str + '* ';
         }
         str += '\n';
@@ -13,12 +13,13 @@ const equilateral = (rows) => {
     console.log(str);
 };
 
-const validateEquilateral = (rows) => {
+const validateEquilateral = (rows: any) => {
     const regex = /^([2-9]|1[0])$/;
     try {
         if (!regex.test(rows)) {
             throw Error('Not a valid input.');
         } else {
+            rows = Number(rows);
             equilateral(rows);
         }
     } catch (err) {

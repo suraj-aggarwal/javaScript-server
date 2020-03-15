@@ -37,6 +37,4 @@ const authMiddlerWare = (module: string, permission: string) => (req: IRequest, 
     }
 };
 
-
-
 export default authMiddlerWare;
