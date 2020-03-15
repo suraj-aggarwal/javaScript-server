@@ -1,71 +1,130 @@
 import { Request, Response } from 'express';
+import UserRepository from '../../repositories/user/UserRepository';
+import SystemResponse from '../../libs/routes/SystemResponse';
+import { IRequest } from '../../libs/interface';
 
 class TraineeController {
-    static instance: TraineeController;
-    static getInstance(): TraineeController {
-        if (TraineeController.instance instanceof TraineeController) {
-            return TraineeController.instance;
-        }
-        return TraineeController.instance = new TraineeController();
+  static instance: TraineeController;
+  public userRepo = new UserRepository();
+  private systemResponse: SystemResponse = new SystemResponse();
+  static getInstance(): TraineeController {
+    if (TraineeController.instance instanceof TraineeController) {
+      return TraineeController.instance;
     }
-    private constructor() { }
+    return (TraineeController.instance = new TraineeController());
+  }
+  private constructor() {}
 
-    addTrainee = (req: Request, res: Response): void => {
-        console.log('---------ADD TRAINEE------------');
-        res.send({
-            id: '1',
-            traineeName: 'Suraj Aggarwal',
-            traineeEmail: 'suraj@gmail.com',
-            department: 'IT'
-        });
+  create = async (req: IRequest, res: Response): Promise<void> => {
+    console.log('---------ADD USER------------');
+    try {
+      const userId = req.user.userId;
+      const data = req.body;
+      const record = { ...data, userId };
+      const result = await this.userRepo.create(record);
+      if (result) {
+        delete result._id;
+        this.systemResponse.success(
+          res,
+          `Trainee added Successfully`,
+          200,
+          result
+        );
+      } else {
+        this.systemResponse.success(res, `Unauthorized User`, 403, result);
+      }
+    } catch (err) {
+      this.systemResponse.failure(res, err.message, 500, err);
     }
+  };
 
-    listTrainee = (req: Request, res: Response): void => {
-        console.log('---------TRAINEE LIST------------');
-        const list = [
-             {
-                id: '1',
-                traineeName: 'Suraj Aggarwal',
-                traineeEmail: 'suraj@gmail.com',
-                department: 'IT'
-            },
-             {
-                id: '2',
-                traineeName: 'Vishal Malhotra',
-                traineeEmail: 'vishal@gmail.com',
-                department: 'IT'
-            },
-             {
-                id: '3',
-                traineeName: 'Swapnil Parithosh',
-                traineeEmail: 'swapnil@gmail.com',
-                department: 'IT'
-            }
-        ];
-        res.send(list);
+  list = async (req: IRequest, res: Response) => {
+    try {
+      const { skip, limit, sort, ...query } = req.query;
+      const options: object = { skip, limit, sort };
+      const result = await this.userRepo.getAllRecord(query, options);
+      if (result.length !== 0) {
+        this.systemResponse.success(res, 'list of users', 200, { count: result.length, result});
+      } else {
+        this.systemResponse.failure(res, 'No user exits', 200, { count: result.length, result});
+      }
+    } catch (err) {
+      this.systemResponse.failure(res, 'No user exits', 200, err);
     }
+    console.log('---------TRAINEE LIST------------');
+  };
 
-    updateTrainee = (req: Request, res: Response): void => {
-        console.log('---------UPDATE TRAINEE------------');
-        const trainee = {
-            id: '2',
-            traineeName: 'Suraj Aggarwal',
-            traineeEmail: 'suraj@gmail.com',
-            department: 'IT'
-        };
-        res.send(trainee);
+  update = async (req: IRequest, res: Response): Promise<void> => {
+    console.log('----------updateUser-----------');
+    try {
+      const { id, dataToUpdate } = req.body;
+      const userId = req.user.userId;
+      const record = { id, dataToUpdate, userId };
+      const result = await this.userRepo.update(record);
+      if (result) {
+        delete result['_id'];
+        this.systemResponse.success(
+          res,
+          `Trainee updated Successfully`,
+          200,
+          result
+        );
+      } else {
+        this.systemResponse.failure(res, `can't find record`, 403, result);
+      }
+    } catch (err) {
+      this.systemResponse.failure(res, err.message, 500, err);
     }
+  };
 
-    deleteTrainee = (req: Request, res: Response) => {
-        console.log('---------DELETE TRAINEE------------');
-        const trainee = {
-            id: '2',
-            traineeName: 'Suraj Aggarwal',
-            traineeEmail: 'suraj@gmail.com',
-            department: 'IT'
-        };
-        res.send(trainee);
+  delete = async (req: IRequest, res: Response): Promise<void> => {
+    console.log('---------DELETE TRAINEE------------');
+    try {
+      const { id } = req.params;
+      const userId = req.user.userId;
+      const record = { id, userId };
+      const result = await this.userRepo.delete(record);
+      if (result) {
+        delete result['_id'];
+        this.systemResponse.success(
+          res,
+          `Trainee deleted Successfully`,
+          200,
+          result
+        );
+      } else {
+        this.systemResponse.failure(
+          res,
+          'No Such record exits',
+          500,
+          result
+        );
+      }
+    } catch (err) {
+      this.systemResponse.failure(res, 'Unauthorized access', 500, err);
     }
+  };
+
+  search = async (req: Request, res: Response): Promise<void> => {
+    console.log('---------TRAINEE------------');
+    try {
+      const query = req.query;
+      const result = await this.userRepo.get(query);
+      if (result) {
+        delete result._id;
+        this.systemResponse.success(res, 'Trainee details', 200, result);
+      } else {
+        this.systemResponse.failure(
+          res,
+          'No matching records',
+          500,
+          result
+        );
+      }
+    } catch (err) {
+      this.systemResponse.failure(res, err.message, 500, err);
+    }
+  };
 }
 
 export default TraineeController.getInstance();

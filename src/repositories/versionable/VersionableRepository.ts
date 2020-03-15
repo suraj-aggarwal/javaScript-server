@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { request } from 'express';
 
 class VersionableRepository<
   D extends mongoose.Document,
@@ -15,9 +16,12 @@ class VersionableRepository<
 
   public create(data): Promise<D> {
     console.log('----------IN VERSIONABLE REPO---------', data);
-    data.createdBy = data.userId;
-    data.originalId = this.getObjectId();
-    return this.modelType.create(data);
+    const record = {
+      ...data,
+      createdBy: data.userId,
+      originalId: this.getObjectId()
+    }
+    return this.modelType.create(record);
   }
 
   public async update(record): Promise<object> {
@@ -47,6 +51,29 @@ class VersionableRepository<
     }
     return await this.modelType.findOne(query, options).lean();
   }
+
+  public async getAllRecord(query: any = {}, options: any = {}): Promise<D[]> {
+    console.log('---------------getAllRecords-------------', query, options);
+    const { skip, limit, sort } = options;
+    const result = await this.modelType.find(
+      { ...query, deletedBy: undefined },
+      {},
+      options
+    );
+    return result;
+  }
+
+  public async search(query): Promise<D> {
+    console.log('-----------search-----------');
+    const result = await this.modelType.findOne(query);
+    if (result) {
+      console.log('--------Inside If-------');
+      return result.toJSON();
+    }
+    console.log('--------Outside If------------');
+    return result;
+  }
+
   public async delete(record): Promise<object> {
     console.log('----------IN VERSIONABLE REPO---------', record);
     const { id, userId } = record;

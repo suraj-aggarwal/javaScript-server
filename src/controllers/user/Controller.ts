@@ -7,7 +7,6 @@ import { IRequest } from '../../libs/interface';
 import SystemResponse from '../../libs/routes/SystemResponse';
 import configuration from '../../config/configuration';
 
-
 class UserController {
   static instance: UserController;
   private systemResponse: SystemResponse = new SystemResponse();
@@ -21,133 +20,44 @@ class UserController {
 
   private userRepo = new UserRepository();
 
-  public count = () => {
-    this.userRepo.count();
-  };
-
-  create = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------ADD USER------------');
-
-    try {
-      const userId = req.user.userId;
-      const data = req.body;
-      const record = { ...data, userId };
-      const result = await this.userRepo.create(record);
-      delete result._id;
-      if (result) {
-        this.systemResponse.success(
-          req,
-          res,
-          `Trainee added Successfully`,
-          200,
-          result
-        );
-      } else {
-        this.systemResponse.success(req, res, `Unauthorized User`, 403, result);
-      }
-    } catch (err) {
-      this.systemResponse.failure(req, res, err.message, 500, err);
-    }
-  };
-  get = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------TRAINEE------------');
-    try {
-      const query = req.query;
-      const result = await this.userRepo.get(query);
-      delete result._id;
-      if (result) {
-        this.systemResponse.success(req, res, 'Trainee details', 200, result);
-      } else {
-        this.systemResponse.failure(req, res, 'No matching records', 500, result);
-      }
-    } catch (err) {
-      this.systemResponse.failure(req, res, err.message, 500, err);
-    }
-  };
-
-  update = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('----------updateUser-----------');
-    try {
-      const { id, dataToUpdate } = req.body;
-      const userId = req.user.userId;
-      const record = { id, dataToUpdate, userId };
-      const result = await this.userRepo.update(record);
-      delete result['_id'];
-      if (result) {
-        this.systemResponse.success(
-          req,
-          res,
-          `Trainee updated Successfully`,
-          200,
-          result
-        );
-      } else {
-        this.systemResponse.failure(req, res, `can't find record`, 403, result);
-      }
-    } catch (err) {
-      this.systemResponse.failure(req, res, err.message, 500, err);
-    }
-  };
-
-  delete = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------DELETE TRAINEE------------');
-    try {
-      const { id } = req.params;
-      const userId = req.user.userId;
-      const record = { id, userId };
-      const result = await this.userRepo.delete(record);
-      delete result['_id'];
-      if (result) {
-        this.systemResponse.success(
-          req,
-          res,
-          `Trainee deleted Successfully`,
-          200,
-          result
-        );
-      } else {
-        this.systemResponse.failure(
-          req,
-          res,
-          'No Such record exits',
-          500,
-          result
-        );
-      }
-    } catch (err) {
-      this.systemResponse.failure(req, res, 'Unauthorized access', 500, err);
-    }
-  };
   login = async (req: IRequest, res: Response): Promise<void> => {
-    const email = req.body.email;
-    const password = req.body.password;
-    const doc = await this.userRepo.get({email});
-    if (doc !== null) {
-      const match = await bcrypt.compare(password, doc.password);
-      console.log('--------Match-------', match);
-      if (!match) {
-        res.send(`Invalid password.`);
+    try{
+      const email = req.body.email;
+      const password = req.body.password;
+      const doc = await this.userRepo.get({email});
+      if (doc !== null) {
+        const match = await bcrypt.compare(password, doc.password);
+        console.log('--------Match-------', match);
+        if (!match) {
+          this.systemResponse.failure(res,'Invalid Password',500, {message:'Enter correct password'});
+          res.send(`Invalid password.`);
+        }
+        const id = doc.originalId;
+        const role = doc.role;
+        const token = jwt.sign({ id, email, role }, config.SECRET_KEY);
+        this.systemResponse.success(res,'Authorized User',200, {message: 'ok', tokenString: token});
+      } else {
+        this.systemResponse.failure(res,`Invalid email`,403, {message: 'make sure to add @successive.tech'});
       }
-      const id = doc.originalId;
-      const token = jwt.sign({id, email}, config.SECRET_KEY);
-      res.send(token);
-    } else {
-      res.send(`Invalid email`);
+    } catch(err) {
+      this.systemResponse.failure(res,'failed to login in',500,{message: 'Server error'});
     }
+ 
   };
+  
   userProfile = (req: Request, res: Response): void => {
     const token: string = req.headers.authorization;
     const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
-    const {id} = decodedPayload;
+    const { id } = decodedPayload;
     console.log(decodedPayload);
     this.userRepo
       .profile(id)
       .then(profile => {
         console.log('--------user Profile----------', profile);
-        this.systemResponse.success(req, res, `User Profile`, 200, profile);
+        this.systemResponse.success(res, `User Profile`, 200, profile);
       })
       .catch(err => {
-        this.systemResponse.failure(req, res, 'No Such userExits', 500, err);
+        this.systemResponse.failure(res, 'No Such userExits', 500, err);
       });
   };
 
@@ -163,7 +73,6 @@ class UserController {
       });
     return false;
   };
-
 }
 
 export default UserController.getInstance();

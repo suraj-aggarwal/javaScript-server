@@ -14,10 +14,11 @@ const authMiddlerWare = (module: string, permission: string) => (req: IRequest, 
         const token: string = req.headers.authorization;
         const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
         if (!decodedPayload) {
-            systemResponse.failure(req, res, `Unauthorized Access`, 401, {error: `Authorization Failed`});
+            systemResponse.failure(res, `Unauthorized Access`, 401, {error: `Authorization Failed`});
         }
         const {id, email} = decodedPayload;
         req.user = {userId: id, email};
+        console.log(id,email)
         const isUserExists = userRepo.isExists(id, email);
         if (!isUserExists) {
             res.send({
@@ -27,7 +28,7 @@ const authMiddlerWare = (module: string, permission: string) => (req: IRequest, 
             });
         }
         if (!hasPermission(module, permission, decodedPayload.role)) {
-            systemResponse.failure(req, res, `Permission Denied`, 403, {error: `Permission Denied`});
+            systemResponse.failure(res, `Permission Denied`, 403, {error: `Permission Denied`});
         }
         console.log('----------------AUTHENTIC AND ATHORIZED------------');
         next();
