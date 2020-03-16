@@ -45,15 +45,10 @@ class UserRepository extends VersionableRepository<
   public get = query => {
     return super.get(query);
   };
-  
+
   public getAllRecord = (query: object = {}, options: object = {}) => {
     return super.getAllRecord(query, options);
   };
-
-  public search = (name:string, email:string) => {
-    return super.search(name, email);
-  }
-
 }
 
 export default UserRepository;

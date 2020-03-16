@@ -20,7 +20,7 @@ class VersionableRepository<
       ...data,
       createdBy: data.userId,
       originalId: this.getObjectId()
-    }
+    };
     return this.modelType.create(record);
   }
 
@@ -34,8 +34,8 @@ class VersionableRepository<
         ...record.dataToUpdate,
         updatedAt: new Date(),
         updatedBy: userId
-      }
-      delete  updateRecord._id;
+      };
+      delete updateRecord._id;
       console.log('---------Updated record -----------', updateRecord);
       return this.modelType.create(updateRecord);
     }
@@ -54,8 +54,8 @@ class VersionableRepository<
 
   public async getAllRecord(query: any = {}, options: any = {}): Promise<D[]> {
     console.log('---------------getAllRecords-------------', query, options);
-    if(!options.sort || options.sort==='') {
-      options.sort = 'createdAt'
+    if (!options.sort || options.sort === '') {
+      options.sort = 'createdAt';
     }
     const result = await this.modelType.find(
       { ...query, deletedBy: undefined },
@@ -75,16 +75,6 @@ class VersionableRepository<
       .lean();
   }
 
-  public async search(name: string, email: string): Promise<object>{
-    console.log('-------- Search -------------',name, email );
-    email.toLowerCase();
-    const  nameRegex = new RegExp("^" + name);
-    const  emailRegex = new RegExp("^" + email);
-    const query = [
-        { name: {"$regex": nameRegex} } , {email: {"$regex": emailRegex, "$options": "i"}}
-    ]
-    return await this.modelType.find().or(query)
-  }
 }
 
 export default VersionableRepository;

@@ -29,6 +29,8 @@ console.log('------------TRAINEE ROUTER---------');
  *         - name: sort
  *           in: query
  *         - name: name
+ *           in : query
+ *         - name: email
  *           in: query
  *           schema:
  *              type: string
@@ -133,7 +135,7 @@ traineeRoute.get('/all', authMiddlerWare('getUsers', 'read'), validateTrainee(va
  *          desciption: data to update a trianee
  *          in : body
  *          schema:
- *              $ref: '#definitions/updateTrainee'
+ *              $ref: '#definitions/updateReqBody'
  *          required: true
  *      responses:
  *        '200':
@@ -154,6 +156,15 @@ traineeRoute.get('/all', authMiddlerWare('getUsers', 'read'), validateTrainee(va
  *                 example: trainee updated successfully
  *              schema:
  *                 $ref: '#definitions/trainee'
+ *      updateReqBody:
+ *          properties:
+ *              id:
+ *                type: string
+ *                example: 5e6b6b95ae038067d9456797
+ *              dataToUpdate:
+ *                 type: object
+ *                 example:
+ *                     name: "suraj"
  */
     .put('/', authMiddlerWare('getUsers', 'write'), validateTrainee(validate.update), Controller.update)
 /**
@@ -194,40 +205,5 @@ traineeRoute.get('/all', authMiddlerWare('getUsers', 'read'), validateTrainee(va
  *              $ref: '#definitions/trainee'
  */
 
-    .delete('/:id', authMiddlerWare('getUsers', 'delete'), validateTrainee(validate.delete), Controller.delete)
-/**
- * @swagger
- * /trainee/search:
- *    get:
- *      tags:
- *      - Trainee
- *      security:
- *        - bearerAuth: []
- *      tag:
- *        -trainnee
- *      description: Return the list of possible users
- *      consumes:
- *        - applicaiton/json
- *      produces:
- *        - application/json
- *      parameters:
- *         - name: name
- *           in: query
- *         - name: email
- *           in: query
- *      responses:
- *        '200':
- *          description: OK
- *          code: 
- *             type: integer
- *             example: 200
- *          count: 
- *              type: integer
- *              example: 1
- *          schema:
- *            $ref: '#/definitions/trainee'
- *        '404':
- *          description: not found
- */
-    .get('/search',authMiddlerWare('getUsers', 'delete'),Controller.search);
+    .delete('/:id', authMiddlerWare('getUsers', 'delete'), validateTrainee(validate.delete), Controller.delete);
 export default traineeRoute;

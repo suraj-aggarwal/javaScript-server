@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import UserRepository from '../../repositories/user/UserRepository';
 import SystemResponse from '../../libs/routes/SystemResponse';
 import { IRequest } from '../../libs/interface';
+import queryString from 'query-string';
 
 class TraineeController {
   static instance: TraineeController;
@@ -42,11 +43,22 @@ class TraineeController {
     try {
       const { skip, limit, sort, ...query } = req.query;
       const options: object = { skip, limit, sort };
+      Object.keys(query).map(key => {
+        const regex = new RegExp('^' + query[key]);
+        query[key] = { $regex: regex, $options: 'i'};
+      });
       const result = await this.userRepo.getAllRecord(query, options);
-      if (result.length !== 0) {
-        this.systemResponse.success(res, 'list of users', 200, { count: result.length, result});
+      console.log(query);
+      if (result.length) {
+        this.systemResponse.success(res, 'list of users', 200, {
+          count: result.length,
+          result
+        });
       } else {
-        this.systemResponse.failure(res, 'No user exits', 200, { count: result.length, result});
+        this.systemResponse.failure(res, 'No user exits', 200, {
+          count: result.length,
+          result
+        });
       }
     } catch (err) {
       this.systemResponse.failure(res, 'No user exits', 200, err);
@@ -93,31 +105,12 @@ class TraineeController {
           result
         );
       } else {
-        this.systemResponse.failure(
-          res,
-          'No Such record exits',
-          500,
-          result
-        );
+        this.systemResponse.failure(res, 'No Such record exits', 500, result);
       }
     } catch (err) {
       this.systemResponse.failure(res, 'Unauthorized access', 500, err);
     }
   };
-
-  search = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const {name , email} = req.query;
-      const result = await this.userRepo.search(!name ?  ' ' : name, !email? ' ' : email)
-      if(result) {
-        this.systemResponse.success(res,'fetched all possible records',200, result);
-      }else{
-        this.systemResponse.failure(res,`please enter valid fileds`, 500, result);
-      }
-    } catch(err) {
-      this.systemResponse.failure(res,`can not fetch record`, 500, err);
-    }
-  }
 }
 
 export default TraineeController.getInstance();
