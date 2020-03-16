@@ -54,11 +54,11 @@ class VersionableRepository<
 
   public async getAllRecord(query: any = {}, options: any = {}): Promise<D[]> {
     console.log('---------------getAllRecords-------------', query, options);
-    if (!options.sort || options.sort === '') {
+    if (!options.sort || options.sort.length === 0) {
       options.sort = 'createdAt';
     }
     const result = await this.modelType.find(
-      { ...query, deletedBy: undefined },
+      { ...query, deletedAt: undefined },
       {},
       options
     );
