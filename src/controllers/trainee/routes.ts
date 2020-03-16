@@ -5,7 +5,6 @@ import validateTrainee from '../../libs/routes/validationHandler';
 import authMiddlerWare from '../../libs/routes/authMiddlerWare';
 
 const traineeRoute = Router();
-console.log('------------TRAINEE ROUTER---------');
 /**
  * @swagger
  * /trainee/all:

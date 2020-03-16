@@ -69,7 +69,6 @@ class TraineeController {
     } catch (err) {
       this.systemResponse.failure(res, 'No user exits', 200, err);
     }
-    console.log('---------TRAINEE LIST------------');
   };
 
   update = async (req: IRequest, res: Response): Promise<void> => {

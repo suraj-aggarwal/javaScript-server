@@ -11,7 +11,6 @@ const authMiddlerWare = (module: string, permission: string) => (
   res: Response,
   next: NextFunction
 ) => {
-  console.log('----------------------AUTHMIDDLE WARE------------------');
   try {
     const userRepo = new UserRepositroy();
     const systemResponse: SystemResponse = new SystemResponse();
@@ -38,7 +37,6 @@ const authMiddlerWare = (module: string, permission: string) => (
         error: `Permission Denied`
       });
     }
-    console.log('----------------AUTHENTIC AND ATHORIZED------------');
     next();
   } catch (err) {
     throw err;
