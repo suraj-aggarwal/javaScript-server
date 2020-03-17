@@ -7,7 +7,7 @@ import authMiddlerWare from '../../libs/routes/authMiddlerWare';
 const traineeRoute = Router();
 /**
  * @swagger
- * /trainee/all:
+ * /trainee/list:
  *    get:
  *      tags:
  *      - Trainee
@@ -27,9 +27,7 @@ const traineeRoute = Router();
  *           in: query
  *         - name: sort
  *           in: query
- *         - name: name
- *           in : query
- *         - name: email
+ *         - name: search
  *           in: query
  *           schema:
  *              type: string
@@ -69,7 +67,7 @@ const traineeRoute = Router();
  *            type: string
  *            example: 5e6b6b95ae038067d9456797
  */
-traineeRoute.get('/all', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.list), Controller.list)
+traineeRoute.get('/list', authMiddlerWare('getUsers', 'read'), validateTrainee(validate.list), Controller.list)
 
 /**
  * @swagger

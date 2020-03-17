@@ -6,7 +6,6 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log('------------ERROR HANDLER--------------');
   const errorlogs = [];
   if (Array.isArray(errs)) {
     errs.forEach(err => {

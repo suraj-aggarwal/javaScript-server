@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 
 const validateTrainee = config => {
     return (req: Request, res: Response, next: NextFunction) => {
-        console.log('-----------validateTrainee----------');
         const parameters: string[] = Object.keys(config);
         const errorLogs: string[] = [];
         parameters.forEach(parameter => {

@@ -33,7 +33,7 @@ class UserRepository extends VersionableRepository<
 
   public isExists = (id: string, email: string) => {
     console.log('----------isExits-----------', id, email);
-    const condition = { originalId: id, email };
+    const condition = { originalId: id, email, deleatedAt: undefined };
     return userModel.exists(condition);
   };
 
@@ -46,7 +46,10 @@ class UserRepository extends VersionableRepository<
     return super.get(query);
   };
 
-  public getAllRecord = (query: object = {}, options: object = {}) => {
+  public getAllRecord = (query: any = {}, options: any = {}) => {
+    if (!options.sort || options.sort.length === 0) {
+      options.sort = 'createdAt';
+    }
     return super.getAllRecord(query, options);
   };
 }

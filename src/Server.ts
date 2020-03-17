@@ -58,7 +58,6 @@ class Server {
   };
 
   initBodyParser = (): void => {
-    console.log('-----------------BODY PARSER-------------------------');
     const { app } = this;
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
