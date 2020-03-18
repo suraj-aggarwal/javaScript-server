@@ -16,62 +16,62 @@ class UserController {
     }
     return (UserController.instance = new UserController());
   }
-  private constructor() {}
+  private constructor() { }
 
   private userRepo = new UserRepository();
 
   login = async (req: IRequest, res: Response): Promise<void> => {
-    try{
+    try {
       const email = req.body.email;
       const password = req.body.password;
-      const doc = await this.userRepo.get({email});
+      const doc = await this.userRepo.get({ email, deletedAt: undefined});
       if (doc !== null) {
         const match = await bcrypt.compare(password, doc.password);
-        console.log('--------Match-------', match);
         if (!match) {
-          this.systemResponse.failure(res,'Invalid Password',500, {message:'Enter correct password'});
+          this.systemResponse.failure(res, 'Invalid Password', 500, {
+            message: 'Enter correct password'
+          });
           res.send(`Invalid password.`);
         }
         const id = doc.originalId;
         const role = doc.role;
         const token = jwt.sign({ id, email, role }, config.SECRET_KEY);
-        this.systemResponse.success(res,'Authorized User',200, {message: 'ok', tokenString: token});
+        this.systemResponse.success(res, 'Authorized User', 200, {
+          message: 'ok',
+          tokenString: token
+        });
       } else {
-        this.systemResponse.failure(res,`Invalid email`,403, {message: 'make sure to add @successive.tech'});
+        this.systemResponse.failure(res, `Invalid email`, 403, {
+          message: 'make sure to add @successive.tech or user not exits any more'
+        });
       }
-    } catch(err) {
-      this.systemResponse.failure(res,'failed to login in',500,{message: 'Server error'});
-    }
- 
-  };
-  
-  userProfile = (req: Request, res: Response): void => {
-    const token: string = req.headers.authorization;
-    const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
-    const { id } = decodedPayload;
-    console.log(decodedPayload);
-    this.userRepo
-      .profile(id)
-      .then(profile => {
-        console.log('--------user Profile----------', profile);
-        this.systemResponse.success(res, `User Profile`, 200, profile);
-      })
-      .catch(err => {
-        this.systemResponse.failure(res, 'No Such userExits', 500, err);
+    } catch (err) {
+      this.systemResponse.failure(res, 'failed to login in', 500, {
+        message: 'Server error'
       });
+    }
   };
 
-  isExists = (id: string, email: string): boolean => {
-    this.userRepo
-      .isExists(id, email)
-      .then(permission => {
-        console.log('-----------------permissions-----------', permission);
-        return permission;
-      })
-      .catch(err => {
-        return false;
-      });
-    return false;
+  userProfile = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const token: string = req.headers.authorization;
+      const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
+      const { id } = decodedPayload;
+      const profile = await this.userRepo.profile(id);
+      if (profile) {
+        delete profile['_id'];
+        this.systemResponse.success(res, `User Profile`, 200, profile);
+      } else {
+        this.systemResponse.failure(res, `User Profile not exists`, 403, profile);
+      }
+
+    } catch (err) {
+      this.systemResponse.failure(res, 'failed to fetch profile', 500, err);
+    }
+  };
+
+  isExists = async (id: string, email: string): Promise<boolean> => {
+    return await this.userRepo.isExists(id, email);
   };
 }
 

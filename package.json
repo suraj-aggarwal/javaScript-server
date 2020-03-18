@@ -49,10 +49,16 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
+    "@types/bcrypt": "^3.0.0",
     "@types/jsonwebtoken": "^8.3.7",
     "@types/mongoose": "^5.7.0",
     "bcrypt": "^3.0.8",
+    "joi-to-swagger": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.8.11"
+    "mongoose": "^5.8.11",
+    "query-string": "^6.11.1",
+    "swagger": "^0.7.5",
+    "swagger-jsdoc": "^3.5.0",
+    "swagger-ui-express": "^4.1.3"
   }
 }

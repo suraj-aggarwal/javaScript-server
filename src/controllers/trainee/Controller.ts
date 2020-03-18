@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import UserRepository from '../../repositories/user/UserRepository';
 import SystemResponse from '../../libs/routes/SystemResponse';
 import { IRequest } from '../../libs/interface';
+import * as queryString from 'query-string';
 
 class TraineeController {
   static instance: TraineeController;
@@ -13,10 +14,9 @@ class TraineeController {
     }
     return (TraineeController.instance = new TraineeController());
   }
-  private constructor() {}
+  private constructor() { }
 
   create = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------ADD USER------------');
     try {
       const userId = req.user.userId;
       const data = req.body;
@@ -40,22 +40,32 @@ class TraineeController {
 
   list = async (req: IRequest, res: Response) => {
     try {
-      const { skip, limit, sort, ...query } = req.query;
+      const { skip, limit, sort, search, ...query } = req.query;
       const options: object = { skip, limit, sort };
-      const result = await this.userRepo.getAllRecord(query, options);
-      if (result.length !== 0) {
-        this.systemResponse.success(res, 'list of users', 200, { count: result.length, result});
+      const filter: object = await this.initSearch(search);
+      let result;
+      if (Object.keys(filter).length) {
+        result = await this.userRepo.getAllRecord(filter, options);
       } else {
-        this.systemResponse.failure(res, 'No user exits', 200, { count: result.length, result});
+        result = await this.userRepo.getAllRecord(query, options);
+      }
+      if (result.length !== 0) {
+        this.systemResponse.success(res, 'list of users', 200, {
+          count: result.length,
+          result
+        });
+      } else {
+        this.systemResponse.failure(res, 'No user exits', 200, {
+          count: result.length,
+          result
+        });
       }
     } catch (err) {
       this.systemResponse.failure(res, 'No user exits', 200, err);
     }
-    console.log('---------TRAINEE LIST------------');
   };
 
   update = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('----------updateUser-----------');
     try {
       const { id, dataToUpdate } = req.body;
       const userId = req.user.userId;
@@ -78,7 +88,6 @@ class TraineeController {
   };
 
   delete = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------DELETE TRAINEE------------');
     try {
       const { id } = req.params;
       const userId = req.user.userId;
@@ -93,38 +102,23 @@ class TraineeController {
           result
         );
       } else {
-        this.systemResponse.failure(
-          res,
-          'No Such record exits',
-          500,
-          result
-        );
+        this.systemResponse.failure(res, 'No Such record exits', 500, result);
       }
     } catch (err) {
       this.systemResponse.failure(res, 'Unauthorized access', 500, err);
     }
   };
 
-  search = async (req: Request, res: Response): Promise<void> => {
-    console.log('---------TRAINEE------------');
-    try {
-      const query = req.query;
-      const result = await this.userRepo.get(query);
-      if (result) {
-        delete result._id;
-        this.systemResponse.success(res, 'Trainee details', 200, result);
-      } else {
-        this.systemResponse.failure(
-          res,
-          'No matching records',
-          500,
-          result
-        );
-      }
-    } catch (err) {
-      this.systemResponse.failure(res, err.message, 500, err);
+  initSearch = async (search) => {
+    const filter: object = queryString.parse(search);
+    if (Object.keys(filter).length) {
+      Object.keys(filter).map(key => {
+        const regex = new RegExp('^' + filter[key]);
+        filter[key] = { $regex: regex, $options: 'i' };
+      });
     }
-  };
+    return filter;
+  }
 }
 
 export default TraineeController.getInstance();
