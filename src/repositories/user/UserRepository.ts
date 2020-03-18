@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 class UserRepository extends VersionableRepository<
   IUserModel,
   mongoose.Model<IUserModel>
-> {
+  > {
   constructor() {
     super(userModel);
   }
@@ -16,14 +16,12 @@ class UserRepository extends VersionableRepository<
   };
 
   public create = (data): Promise<IUserModel> => {
-    console.log('----------IN USERREPOSITORY CREATE METHOD-----------');
     const hash = bcrypt.hashSync(data.password, 10);
     data.password = hash;
     return super.create(data);
   };
 
   public delete = record => {
-    console.log('----------DELETE USER-------------', record);
     return super.delete(record);
   };
 
@@ -32,17 +30,15 @@ class UserRepository extends VersionableRepository<
   };
 
   public isExists = (id: string, email: string) => {
-    console.log('----------isExits-----------', id, email);
-    const condition = { originalId: id, email, deleatedAt: undefined };
-    return userModel.exists(condition);
+    const query = { originalId: id, email };
+    return super.isExits(query);
   };
 
   public profile = (id: string) => {
-    console.log('----------------User Profile Inside Controller--------------');
-    return userModel.findOne({ originalId: id, deletedAt: undefined });
+    return super.get({ id });
   };
 
-  public get = query => {
+  public get = (query) => {
     return super.get(query);
   };
 

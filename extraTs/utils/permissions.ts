@@ -1,7 +1,6 @@
 import { permissions } from '../constants';
 
 const hasPermission = (mod: string, operation: string, role: string) => {
-    console.log('permission', mod, operation, role);
     const commonRoles: string[] = permissions[mod] && permissions[mod][operation];
     const specialRoles: string[] = permissions[mod] && permissions[mod].all;
     let allow: boolean = false;

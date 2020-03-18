@@ -3,8 +3,6 @@ import { Router } from 'express';
 import authMiddlerWare from '../../libs/routes/authMiddlerWare';
 
 const userRoute = Router();
-
-console.log('------------TRAINEE ROUTER---------');
 /**
  * @swagger
  * /user/me:

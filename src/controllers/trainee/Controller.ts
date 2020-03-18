@@ -14,10 +14,9 @@ class TraineeController {
     }
     return (TraineeController.instance = new TraineeController());
   }
-  private constructor() {}
+  private constructor() { }
 
   create = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------ADD USER------------');
     try {
       const userId = req.user.userId;
       const data = req.body;
@@ -43,18 +42,13 @@ class TraineeController {
     try {
       const { skip, limit, sort, search, ...query } = req.query;
       const options: object = { skip, limit, sort };
-      const filter: object = queryString.parse(search);
+      const filter: object = await this.initSearch(search);
       let result;
       if (Object.keys(filter).length) {
-        Object.keys(filter).map(key => {
-          const regex = new RegExp('^' + filter[key]);
-          filter[key] = { $regex: regex, $options: 'i' };
-        });
         result = await this.userRepo.getAllRecord(filter, options);
       } else {
         result = await this.userRepo.getAllRecord(query, options);
       }
-
       if (result.length !== 0) {
         this.systemResponse.success(res, 'list of users', 200, {
           count: result.length,
@@ -72,7 +66,6 @@ class TraineeController {
   };
 
   update = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('----------updateUser-----------');
     try {
       const { id, dataToUpdate } = req.body;
       const userId = req.user.userId;
@@ -95,7 +88,6 @@ class TraineeController {
   };
 
   delete = async (req: IRequest, res: Response): Promise<void> => {
-    console.log('---------DELETE TRAINEE------------');
     try {
       const { id } = req.params;
       const userId = req.user.userId;
@@ -116,6 +108,17 @@ class TraineeController {
       this.systemResponse.failure(res, 'Unauthorized access', 500, err);
     }
   };
+
+  initSearch = async (search) => {
+    const filter: object = queryString.parse(search);
+    if (Object.keys(filter).length) {
+      Object.keys(filter).map(key => {
+        const regex = new RegExp('^' + filter[key]);
+        filter[key] = { $regex: regex, $options: 'i' };
+      });
+    }
+    return filter;
+  }
 }
 
 export default TraineeController.getInstance();

@@ -2,9 +2,9 @@ import { Ipermissions, Iuser } from './interface';
 
 const permissions: Ipermissions = {
     'getUsers': {
-        all: ['head-Trainer'],
-        read: ['Trainer', 'Trainee'],
-        write: ['Trainer'],
+        all: ['head-trainer'],
+        read: ['trainer', 'trainee'],
+        write: ['trainer'],
         delete: []
     }
 };
