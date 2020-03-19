@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import UserRepository from '../../repositories/user/UserRepository';
 import SystemResponse from '../../libs/routes/SystemResponse';
 import { IRequest } from '../../libs/interface';
-import * as queryString from 'query-string';
+import { initSearch } from '../../libs/utils/helper';
 
 class TraineeController {
   static instance: TraineeController;
@@ -42,7 +42,7 @@ class TraineeController {
     try {
       const { skip, limit, sort, search, ...query } = req.query;
       const options: object = { skip, limit, sort };
-      const filter: object = await this.initSearch(search);
+      const filter: object = await initSearch(search);
       let result;
       if (Object.keys(filter).length) {
         result = await this.userRepo.getAllRecord(filter, options);
@@ -108,17 +108,6 @@ class TraineeController {
       this.systemResponse.failure(res, 'Unauthorized access', 500, err);
     }
   };
-
-  initSearch = async (search) => {
-    const filter: object = queryString.parse(search);
-    if (Object.keys(filter).length) {
-      Object.keys(filter).map(key => {
-        const regex = new RegExp('^' + filter[key]);
-        filter[key] = { $regex: regex, $options: 'i' };
-      });
-    }
-    return filter;
-  }
 }
 
 export default TraineeController.getInstance();

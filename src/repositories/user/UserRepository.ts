@@ -43,7 +43,7 @@ class UserRepository extends VersionableRepository<
   };
 
   public getAllRecord = (query: any = {}, options: any = {}) => {
-    if (!options.sort || options.sort.length === 0) {
+    if (!options.sort) {
       options.sort = 'createdAt';
     }
     return super.getAllRecord(query, options);
