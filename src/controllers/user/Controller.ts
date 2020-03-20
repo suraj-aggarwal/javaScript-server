@@ -20,39 +20,37 @@ class UserController {
 
   private userRepo = new UserRepository();
 
-  login = async (req: IRequest, res: Response): Promise<void> => {
+  login = async (req: IRequest, res: Response): Promise<Response> => {
     try {
       const email = req.body.email;
       const password = req.body.password;
-      const doc = await this.userRepo.get({ email, deletedAt: undefined});
+      const doc = await this.userRepo.get({ email });
       if (doc !== null) {
         const match = await bcrypt.compare(password, doc.password);
         if (!match) {
-          this.systemResponse.failure(res, 'Invalid Password', 500, {
+          return this.systemResponse.failure(res, 'Invalid Password', 500, {
             message: 'Enter correct password'
           });
-          res.send(`Invalid password.`);
         }
         const id = doc.originalId;
         const role = doc.role;
         const token = jwt.sign({ id, email, role }, config.SECRET_KEY);
-        this.systemResponse.success(res, 'Authorized User', 200, {
+        return this.systemResponse.success(res, 'Authorized User', 200, {
           message: 'ok',
           tokenString: token
         });
-      } else {
-        this.systemResponse.failure(res, `Invalid email`, 403, {
-          message: 'make sure to add @successive.tech or user not exits any more'
-        });
       }
+      return this.systemResponse.failure(res, `Invalid email`, 403, {
+        message: 'make sure to add @successive.tech or user not exits any more'
+      });
     } catch (err) {
-      this.systemResponse.failure(res, 'failed to login in', 500, {
+      return this.systemResponse.failure(res, 'failed to login in', 500, {
         message: 'Server error'
       });
     }
   };
 
-  userProfile = async (req: Request, res: Response): Promise<void> => {
+  userProfile = async (req: Request, res: Response): Promise<Response> => {
     try {
       const token: string = req.headers.authorization;
       const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
@@ -60,13 +58,12 @@ class UserController {
       const profile = await this.userRepo.profile(id);
       if (profile) {
         delete profile['_id'];
-        this.systemResponse.success(res, `User Profile`, 200, profile);
-      } else {
-        this.systemResponse.failure(res, `User Profile not exists`, 403, profile);
+        return this.systemResponse.success(res, `User Profile`, 200, profile);
       }
+      return this.systemResponse.failure(res, `User Profile not exists`, 403, profile);
 
     } catch (err) {
-      this.systemResponse.failure(res, 'failed to fetch profile', 500, err);
+      return this.systemResponse.failure(res, 'failed to fetch profile', 500, err);
     }
   };
 
