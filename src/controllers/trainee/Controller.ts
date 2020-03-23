@@ -43,7 +43,7 @@ class TraineeController {
       const options: object = { skip, limit, sort };
       const filter: object = await initSearch(search);
       let result;
-      const querySchema = Object.keys(filter).length !== 0 ? filter : query;
+      const querySchema = Object.keys(filter).length ? filter : query;
       result = await this.userRepo.getAllRecord(querySchema, options);
       if (result.length !== 0) {
         return this.systemResponse.success(res, 'list of users', 200, {

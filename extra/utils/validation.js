@@ -1,12 +1,12 @@
 const users = [
     {
         traineeName: 'suraj.aggarwal@successive.tech',
-        reveiwerName: 'madhav.bansal@successive.tech'
+        reveiwerName: 'madhav.bansal@successive.tech',
     },
     {
         traineeName: 'anjali.shah@succesive.tech',
-        reveiwerName: 'pooja.thapa@successive.tech'
-    }
+        reveiwerName: 'pooja.thapa@successive.tech',
+    },
 ]
 
 const validateEmail = str => {
