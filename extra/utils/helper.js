@@ -4,4 +4,4 @@ const validateEmail = (str) => {
     return regex.test(str)
 }
 
-export {validateEmail}
+export { validateEmail }

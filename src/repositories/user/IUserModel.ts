@@ -5,10 +5,10 @@ interface IUserModel extends IVersionableDocument {
     email: string;
     password: string;
     role: string;
-    address: string;
-    mob: number;
-    dob: Date;
-    hobbies: [string];
+    address?: string;
+    mob?: number;
+    dob?: Date;
+    hobbies?: [string];
 }
 
 export default IUserModel;

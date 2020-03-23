@@ -3,8 +3,8 @@ import { seedData } from './seedData';
 
 class Database {
 
-    static open = (uri: string) => new Promise( (resolve, reject)  => {
-        mongoose.connect(uri, { useNewUrlParser: true , useUnifiedTopology: true }, (err) => {
+    static open = (uri: string) => new Promise((resolve, reject) => {
+        mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
             if (err) {
                 reject('database connnection failed');
             } else {

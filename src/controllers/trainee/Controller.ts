@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import UserRepository from '../../repositories/user/UserRepository';
 import SystemResponse from '../../libs/routes/SystemResponse';
 import { IRequest } from '../../libs/interface';
-import * as queryString from 'query-string';
+import { initSearch } from '../../libs/utils/helper';
 
 class TraineeController {
   static instance: TraineeController;
@@ -16,7 +16,7 @@ class TraineeController {
   }
   private constructor() { }
 
-  create = async (req: IRequest, res: Response): Promise<void> => {
+  create = async (req: IRequest, res: Response): Promise<Response> => {
     try {
       const userId = req.user.userId;
       const data = req.body;
@@ -24,48 +24,43 @@ class TraineeController {
       const result = await this.userRepo.create(record);
       if (result) {
         delete result._id;
-        this.systemResponse.success(
+        return this.systemResponse.success(
           res,
           `Trainee added Successfully`,
           200,
           result
         );
-      } else {
-        this.systemResponse.success(res, `Unauthorized User`, 403, result);
       }
+      return this.systemResponse.success(res, `Unauthorized User`, 403, result);
     } catch (err) {
-      this.systemResponse.failure(res, err.message, 500, err);
+      return this.systemResponse.failure(res, err.message, 500, err);
     }
   };
 
-  list = async (req: IRequest, res: Response) => {
+  list = async (req: IRequest, res: Response): Promise<Response> => {
     try {
       const { skip, limit, sort, search, ...query } = req.query;
       const options: object = { skip, limit, sort };
-      const filter: object = await this.initSearch(search);
+      const filter: object = await initSearch(search);
       let result;
-      if (Object.keys(filter).length) {
-        result = await this.userRepo.getAllRecord(filter, options);
-      } else {
-        result = await this.userRepo.getAllRecord(query, options);
-      }
+      const querySchema = Object.keys(filter).length ? filter : query;
+      result = await this.userRepo.getAllRecord(querySchema, options);
       if (result.length !== 0) {
-        this.systemResponse.success(res, 'list of users', 200, {
-          count: result.length,
-          result
-        });
-      } else {
-        this.systemResponse.failure(res, 'No user exits', 200, {
+        return this.systemResponse.success(res, 'list of users', 200, {
           count: result.length,
           result
         });
       }
+      return this.systemResponse.failure(res, 'No user exits', 200, {
+        count: result.length,
+        result
+      });
     } catch (err) {
-      this.systemResponse.failure(res, 'No user exits', 200, err);
+      return this.systemResponse.failure(res, 'No user exits', 200, err);
     }
   };
 
-  update = async (req: IRequest, res: Response): Promise<void> => {
+  update = async (req: IRequest, res: Response): Promise<Response> => {
     try {
       const { id, dataToUpdate } = req.body;
       const userId = req.user.userId;
@@ -73,21 +68,20 @@ class TraineeController {
       const result = await this.userRepo.update(record);
       if (result) {
         delete result['_id'];
-        this.systemResponse.success(
+        return this.systemResponse.success(
           res,
           `Trainee updated Successfully`,
           200,
           result
         );
-      } else {
-        this.systemResponse.failure(res, `can't find record`, 403, result);
       }
+      return this.systemResponse.failure(res, `can't find record`, 403, result);
     } catch (err) {
-      this.systemResponse.failure(res, err.message, 500, err);
+      return this.systemResponse.failure(res, err.message, 500, err);
     }
   };
 
-  delete = async (req: IRequest, res: Response): Promise<void> => {
+  delete = async (req: IRequest, res: Response): Promise<Response> => {
     try {
       const { id } = req.params;
       const userId = req.user.userId;
@@ -95,30 +89,18 @@ class TraineeController {
       const result = await this.userRepo.delete(record);
       if (result) {
         delete result['_id'];
-        this.systemResponse.success(
+        return this.systemResponse.success(
           res,
           `Trainee deleted Successfully`,
           200,
           result
         );
-      } else {
-        this.systemResponse.failure(res, 'No Such record exits', 500, result);
       }
+      return this.systemResponse.failure(res, 'No Such record exits', 500, result);
     } catch (err) {
-      this.systemResponse.failure(res, 'Unauthorized access', 500, err);
+      return this.systemResponse.failure(res, 'Unauthorized access', 500, err);
     }
   };
-
-  initSearch = async (search) => {
-    const filter: object = queryString.parse(search);
-    if (Object.keys(filter).length) {
-      Object.keys(filter).map(key => {
-        const regex = new RegExp('^' + filter[key]);
-        filter[key] = { $regex: regex, $options: 'i' };
-      });
-    }
-    return filter;
-  }
 }
 
 export default TraineeController.getInstance();
