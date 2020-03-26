@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { request } from 'express';
 
 class VersionableRepository<
   D extends mongoose.Document,

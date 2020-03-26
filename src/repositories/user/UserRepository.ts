@@ -34,10 +34,6 @@ class UserRepository extends VersionableRepository<
     return super.isExits(query);
   };
 
-  public profile = (id: string) => {
-    return super.get({ id });
-  };
-
   public get = (query) => {
     return super.get(query);
   };
@@ -51,3 +47,4 @@ class UserRepository extends VersionableRepository<
 }
 
 export default UserRepository;
+

@@ -29,3 +29,4 @@ const validateEquilateral = (rows: any) => {
 
 
 export default validateEquilateral;
+

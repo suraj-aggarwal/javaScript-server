@@ -18,8 +18,9 @@ class TraineeController {
 
   create = async (req: IRequest, res: Response): Promise<Response> => {
     try {
-      const userId = req.user.userId;
+      // const userId = req.user.userId;
       const data = req.body;
+      const { userId = '' } = req.user || {};
       const record = { ...data, userId };
       const result = await this.userRepo.create(record);
       if (result) {
@@ -31,7 +32,7 @@ class TraineeController {
           result
         );
       }
-      return this.systemResponse.success(res, `Unauthorized User`, 403, result);
+      return this.systemResponse.success(res, `can't create user`, 403, result);
     } catch (err) {
       return this.systemResponse.failure(res, err.message, 500, err);
     }
@@ -45,7 +46,7 @@ class TraineeController {
       let result;
       const querySchema = Object.keys(filter).length ? filter : query;
       result = await this.userRepo.getAllRecord(querySchema, options);
-      if (result.length !== 0) {
+      if (result.length) {
         return this.systemResponse.success(res, 'list of users', 200, {
           count: result.length,
           result
@@ -63,7 +64,7 @@ class TraineeController {
   update = async (req: IRequest, res: Response): Promise<Response> => {
     try {
       const { id, dataToUpdate } = req.body;
-      const userId = req.user.userId;
+      const { userId } = req.user;
       const record = { id, dataToUpdate, userId };
       const result = await this.userRepo.update(record);
       if (result) {
@@ -84,7 +85,7 @@ class TraineeController {
   delete = async (req: IRequest, res: Response): Promise<Response> => {
     try {
       const { id } = req.params;
-      const userId = req.user.userId;
+      const { userId } = req.user;
       const record = { id, userId };
       const result = await this.userRepo.delete(record);
       if (result) {
