@@ -51,7 +51,7 @@ const validateTrainee = config => {
                 });
             }
         });
-         (errorLogs.length !== 0) ?  next(errorLogs) : next();
+         (errorLogs.length) ?  next(errorLogs) : next();
     };
 };
 export default validateTrainee;

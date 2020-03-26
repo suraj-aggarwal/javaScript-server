@@ -18,22 +18,20 @@ class UserController {
   }
   private constructor() { }
 
-  private userRepo = new UserRepository();
+  private userRepo: UserRepository = new UserRepository();
 
   login = async (req: IRequest, res: Response): Promise<Response> => {
     try {
-      const email = req.body.email;
-      const password = req.body.password;
+      const { email, password } = req.body;
       const doc = await this.userRepo.get({ email });
-      if (doc !== null) {
+      if (doc) {
         const match = await bcrypt.compare(password, doc.password);
         if (!match) {
           return this.systemResponse.failure(res, 'Invalid Password', 500, {
             message: 'Enter correct password'
           });
         }
-        const id = doc.originalId;
-        const role = doc.role;
+        const { id, role } = doc || {};
         const token = jwt.sign({ id, email, role }, config.SECRET_KEY);
         return this.systemResponse.success(res, 'Authorized User', 200, {
           message: 'ok',
@@ -55,7 +53,7 @@ class UserController {
       const token: string = req.headers.authorization;
       const decodedPayload: any = jwt.verify(token, configuration.SECRET_KEY);
       const { id } = decodedPayload;
-      const profile = await this.userRepo.profile(id);
+      const profile = await this.userRepo.get({ id });
       if (profile) {
         delete profile['_id'];
         return this.systemResponse.success(res, `User Profile`, 200, profile);
@@ -65,10 +63,6 @@ class UserController {
     } catch (err) {
       return this.systemResponse.failure(res, 'failed to fetch profile', 500, err);
     }
-  };
-
-  isExists = async (id: string, email: string): Promise<boolean> => {
-    return await this.userRepo.isExists(id, email);
   };
 }
 
