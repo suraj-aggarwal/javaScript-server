@@ -11,39 +11,39 @@ class UserRepository extends VersionableRepository<
   constructor() {
     super(userModel);
   }
-  public count = () => {
+  public async count() {
     return userModel.countDocuments();
-  };
+  }
 
-  public create = (data): Promise<IUserModel> => {
+  public async create(data: any = {}): Promise<IUserModel>{
     const hash = bcrypt.hashSync(data.password, 10);
     data.password = hash;
     return super.create(data);
-  };
+  }
 
-  public delete = record => {
+  public  async delete(record: any = {}) {
     return super.delete(record);
-  };
+  }
 
-  public update = record => {
+  public async update(record) {
     return super.update(record);
-  };
+  }
 
-  public isExists = (id: string, email: string) => {
+  public async isExists(id: string, email: string) {
     const query = { originalId: id, email };
     return super.isExits(query);
-  };
+  }
 
-  public get = (query) => {
+  public async get(query: any = {}) {
     return super.get(query);
-  };
+  }
 
-  public getAllRecord = (query: any = {}, options: any = {}) => {
+  public async getAllRecord (query: any = {}, options: any = {}) {
     if (!options.sort) {
       options.sort = 'createdAt';
     }
     return super.getAllRecord(query, options);
-  };
+  }
 }
 
 export default UserRepository;

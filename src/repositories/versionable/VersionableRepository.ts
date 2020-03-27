@@ -13,7 +13,7 @@ class VersionableRepository<
     return mongoose.Types.ObjectId();
   }
 
-  public async create(data): Promise<D> {
+  public async create(data: any = {}): Promise<D> {
       if (!data.createdBy) {
         data.createdBy = data.userId;
       }
@@ -21,10 +21,10 @@ class VersionableRepository<
         ...data,
         originalId: this.getObjectId()
       };
-      return await this.modelType.create(record);
+      return  this.modelType.create(record);
   }
 
-  public async update(record): Promise<object> {
+  public async update(record: any = {}): Promise<object> {
     const { id, userId } = record;
     const result = await this.delete({ id, userId });
     if (result) {
@@ -46,34 +46,34 @@ class VersionableRepository<
       delete query.id;
     }
     query = { deletedAt: undefined, ...query };
-    return await this.modelType.findOne(query, options).lean();
+    return  this.modelType.findOne(query, options).lean();
   }
 
   public async getAllRecord(query: any = {}, options: any = {}): Promise<D[]> {
-    return await this.modelType.find(
+    return  this.modelType.find(
       { ...query, deletedAt: undefined },
       {},
       options
     );
   }
 
-  public async delete(record): Promise<object> {
+  public async delete(record: any = {}): Promise<object> {
     const { id, userId } = record;
     const query = { originalId: id, deletedBy: undefined };
     const update = { deletedAt: new Date(), deletedBy: userId };
-    return await this.modelType
+    return  this.modelType
       .findOneAndUpdate(query, update, { new: false })
       .lean();
   }
 
 
-  public async isExits(query): Promise<boolean> {
+  public async isExits(query: any = {}): Promise<boolean> {
     if (query.id) {
       query.originalId = query.id;
       delete query.id;
     }
     query = { deletedAt: undefined, ...query };
-    return await this.modelType.exists(query);
+    return  this.modelType.exists(query);
   }
 
 }
