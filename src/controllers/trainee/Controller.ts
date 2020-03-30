@@ -18,7 +18,6 @@ class TraineeController {
 
   create = async (req: IRequest, res: Response): Promise<Response> => {
     try {
-      // const userId = req.user.userId;
       const data = req.body;
       const { userId = '' } = req.user || {};
       const record = { ...data, userId };
