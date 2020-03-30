@@ -1,0 +1,64 @@
+{
+  "name": "new",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run lint"
+    }
+  },
+  "scripts": {
+    "test1": "echo \"Error: no test specified\" && exit 1",
+    "diamond": "node extra/patterns/diamond.js",
+    "equilateral": "node extra/patterns/equilateral.js",
+    "index": "npx babel-node extra",
+    "tcsDiamond": "node extraTs/patterns/diamond.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:extra": "babel-node extra",
+    "start:extraTs": "tsc-watch --project . --onSuccess \"npm run nodemon\"",
+    "nodemon": "nodemon ./dist/index.js",
+    "lint": "./node_modules/tslint/bin/tslint -c tslint.json -p tsconfig.json --exclude 'node_modules/**/*.{j,t}s'",
+    "lint:fix": "npm run lint --fix",
+    "start": "tsc-watch --project . --onSuccess \"npm run nodemon\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suraj-aggarwal/javaScript-client.git"
+  },
+  "author": "suraj aggarwal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/suraj-aggarwal/javaScript-client/issues"
+  },
+  "homepage": "https://github.com/suraj-aggarwal/javaScript-client#readme",
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/node": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@types/express": "^4.17.2",
+    "body-parser": "^1.19.0",
+    "commitizen": "^4.0.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "husky": "^4.2.1",
+    "nodemon": "^2.0.2",
+    "tsc-watch": "^4.1.0",
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/jsonwebtoken": "^8.3.7",
+    "@types/mongoose": "^5.7.0",
+    "bcrypt": "^3.0.8",
+    "joi-to-swagger": "^4.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.8.11",
+    "query-string": "^6.11.1",
+    "swagger": "^0.7.5",
+    "swagger-jsdoc": "^3.5.0",
+    "swagger-ui-express": "^4.1.3"
+  }
+}
