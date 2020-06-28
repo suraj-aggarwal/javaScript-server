@@ -1,14 +1,12 @@
 import UserRepository from '../repositories/user/UserRepository';
 import config from '../config/configuration';
-import * as bcrypt from 'bcrypt';
 
 const userRepo = new UserRepository();
-const hash = bcrypt.hashSync(config.PASSWORD, 10);
 export const seedData = () => {
     const seedUser = {
         name: 'suraj',
         email: 'trainee@successive.tech',
-        password: hash,
+        password: config.PASSWORD,
         mob: 900290282,
         role: 'head-trainer',
         dob: new Date(),
