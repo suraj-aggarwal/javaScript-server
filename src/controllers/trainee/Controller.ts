@@ -19,7 +19,7 @@ class TraineeController {
   create = async (req: IRequest, res: Response): Promise<Response> => {
     try {
       const data = req.body;
-      const { userId = '' } = req.user || {};
+      const { userId  } = req.user || {};
       const record = { ...data, userId };
       const result = await this.userRepo.create(record);
       if (result) {

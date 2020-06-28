@@ -46,7 +46,7 @@ class VersionableRepository<
       delete query.id;
     }
     query = { deletedAt: undefined, ...query };
-    return  this.modelType.findOne(query, options).lean();
+    return this.modelType.findOne(query, options).lean();
   }
 
   public async getAllRecord(query: any = {}, options: any = {}): Promise<D[]> {
@@ -60,9 +60,9 @@ class VersionableRepository<
   public async delete(record: any = {}): Promise<object> {
     const { id, userId } = record;
     const query = { originalId: id, deletedBy: undefined };
-    const update = { deletedAt: new Date(), deletedBy: userId };
+    const update: object = { deletedAt: new Date(), deletedBy: userId };
     return  this.modelType
-      .findOneAndUpdate(query, update, { new: false })
+      .findOneAndUpdate(query, update, { new: false})
       .lean();
   }
 

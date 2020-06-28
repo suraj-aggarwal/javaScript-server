@@ -15,7 +15,7 @@ class UserRepository extends VersionableRepository<
     return userModel.countDocuments();
   }
 
-  public async create(data: any = {}): Promise<IUserModel>{
+  public async create(data: any = {}): Promise<IUserModel> {
     const hash = bcrypt.hashSync(data.password, 10);
     data.password = hash;
     return super.create(data);
