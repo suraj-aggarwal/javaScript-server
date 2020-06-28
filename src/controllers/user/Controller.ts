@@ -25,14 +25,14 @@ class UserController {
       const { email, password } = req.body;
       const doc = await this.userRepo.get({ email });
       if (doc) {
-        const match = await bcrypt.compare(password, doc.password);
+        const match = await bcrypt.compare(password , doc.password);
         if (!match) {
           return this.systemResponse.failure(res, 'Invalid Password', 500, {
             message: 'Enter correct password'
           });
         }
-        const { id, role } = doc || {};
-        const token = jwt.sign({ id, email, role }, config.SECRET_KEY);
+        const { originalId, role } = doc || {};
+        const token = jwt.sign({ id: originalId, email, role }, config.SECRET_KEY);
         return this.systemResponse.success(res, 'Authorized User', 200, {
           message: 'ok',
           tokenString: token
